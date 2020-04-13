@@ -1,25 +1,50 @@
 <!DOCTYPE html>
 <html lang="hu">
-    <head>
-        <title>Fényképalbum</title>
-    </head>
-    <body>
 
-        <table border="1">
-            <tr>
-            {% for colname in colnames %}
-                <th>{{ colname }}</th>
-            {% endfor %}
-            </tr>
+<head>
+    <title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
+  <style>
+    /*mivel itt nincs footer, a minden ne legyen annyival kisebb*/
+    #minden {
+        min-height: 100vh;
+    }
+  </style>
+</head>
 
-            {% for row in rows %}
-            <tr>
-                {% for col in row %}
-                <th>{{col}}</th>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </table>
+<body>
 
-    </body>
+    	<div id="minden">
+
+    	<section>
+   		<form class="col-12" method="post">
+            <div id="loginbox">
+                <div class="description">
+                    <span>Bejelentkezés</span>
+                </div>
+                <label for="email">E-mail<br>
+                    <input id="email" type="email" placeholder="E-mail" required>
+                </label> <br>
+                <label for="password">Jelszó<br>
+                    <input id="password" type="password" placeholder="Jelszó" required>
+                </label> <br>
+                <button type="submit" class="btn btn-primary">Bejelentkezés</button>
+                <div class="signup">
+                    Nem rendelkezik fiókkal? <a href="todoregistr">Regisztrájon itt!</a>
+                </div>
+            </div>
+        </form>
+
+    </section>
+
+    </div> <!-- minden -->
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>
+
 </html>

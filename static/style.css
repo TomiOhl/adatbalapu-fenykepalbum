@@ -1,0 +1,184 @@
+body {
+    margin: 0;
+    background: linear-gradient(
+        to bottom right, #0266c8, #00a8ff
+    );
+    color: white;
+}
+/*--- everything above footer ---*/
+#minden {
+    min-height: calc(100vh - 37px);
+}
+/*--- navigation bar ---*/
+.navbar {
+    background: #f195ac;
+}
+.nav-link,
+.navbar-brand {
+    color: #fff;
+    cursor: pointer;
+}
+.nav-link {
+    margin-right: 1em !important;
+}
+.nav-link:hover {
+    color: #00a8ff;
+}
+.navbar-brand:hover {
+    color: #00a8ff;
+}
+.navbar-collapse {
+    justify-content: flex-end;
+}
+.activetab {
+    font-weight: bold;
+}
+/*--- header ---*/
+.description {
+    padding-top: 40px;
+    display: block;
+    margin-left: auto;
+	margin-right: auto;
+	max-width: 75%;
+	font-size: 20px;
+    text-align: center;
+}
+.description img {
+    max-width: 100px;
+}
+/*--- section ---*/
+section {
+    padding: 25px 0 25px;
+    display: block;
+    margin-left: auto;
+	margin-right: auto;
+    max-width: 95%;
+    text-align: center;
+}
+#loginbox {
+    display: block;
+    text-align: center;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#loginbox label {
+    text-align: start;
+}
+#loginbox .signup a {
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: white;
+}
+input {
+    border: 1px solid #fff;
+    border-radius: 6px;
+    padding: 3pt;
+    margin: 5px;
+    width: 225pt;
+}
+input:hover {
+    box-shadow: 1px 1px 1px 1px #3029299a;
+}
+.btn {
+    margin: 5px;
+    border: 1px solid #f195ac;
+    background: #f195ac;
+    border-radius: 6px;
+    color: white;
+    max-width: 166pt;
+    width: 166pt;
+}
+.btn:hover {
+    border: 1px solid #fff;
+    background: #f4afc2;
+    box-shadow: 0 6px 8px 0 #3029299a;
+}
+.btn a {
+    text-decoration: none;
+    display: block;
+    width: 100%;
+}
+form select, .modal-body select {
+    background-color: white;
+    border: 1px solid #fff;
+    border-radius: 6px;
+    padding: 3pt;
+    margin: 5px;
+    width: 225pt;
+}
+form select:hover, .modal-body select:hover {
+    box-shadow: 1px 1px 1px 1px #3029299a;
+}
+.felvetelbtn {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    max-width: 225pt;
+    width: 225pt;
+}
+/*--- footer ---*/
+footer {
+    display: block;
+    background-color: linear-gradient(#00a8ff, #0266c8);
+    padding: 7px;
+    height: 37px;
+    width: 100%;
+    text-align: center;
+}
+footer .left {
+    float: left;
+}
+footer .right {
+    float: right;
+}
+/*--- table ---*/
+table + h3 {        /*h3 ami utan table*/
+    margin-top: 25px;
+}
+table {
+    border: 1px solid whitesmoke;
+    color: black;
+    margin: auto;
+    transition: all .2s ease-in-out;
+}
+table:hover {
+    box-shadow: 0 6px 6px 0 #3029299a;
+}
+th, td {
+	border: 1px solid #eee;
+    padding: 8px;
+}
+th {
+    background-color: #b28bc0;
+    color: white;
+    text-align: center;
+}
+tr:nth-child(even) {
+    background-color: whitesmoke;
+}
+tr:nth-child(odd) {
+    background-color: white;
+}
+tr:hover {
+    background-color: #ddd;
+}
+/*--- modal ---*/
+.modal-dialog{
+    color: black;
+}
+.modal-header, .modal-footer {
+    border: 0;
+}
+.close:hover {
+    color: #ef5350;
+    outline-style: none;
+}
+form > .modal-body {
+    text-align: center;
+}
+.modal-body select, .modal-body input {
+    border: 1px solid lightgray;
+}
