@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <title>Fényképalbum</title>
+    </head>
+    <body>
+
+        <table border="1">
+            <tr>
+            {% for colname in colnames %}
+                <th>{{ colname }}</th>
+            {% endfor %}
+            </tr>
+
+            {% for row in rows %}
+            <tr>
+                {% for col in row %}
+                <th>{{col}}</th>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+    </body>
+</html>
