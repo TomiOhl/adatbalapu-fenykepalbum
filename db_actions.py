@@ -7,7 +7,7 @@ def connect():
     return con
 
 
-def execute(query):
+def exec_return(query):  # ahol visszater valamivel, pl SELECT
     colnames = []
     out = []
     try:
@@ -21,3 +21,13 @@ def execute(query):
     except cx_Oracle.Error as error:
         print(error)
     return colnames, out
+
+
+def exec_noreturn(query):   # ahol nem ter vissza (pl INSERT)
+    try:
+        with connect() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+    except cx_Oracle.Error as error:
+        print(error)

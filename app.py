@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for, redirect
-from db_actions import execute
+from db_actions import exec_return, exec_noreturn
 
 app = Flask(__name__)
 
@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # regisztracio lenyilo listahoz telepulesek listaja
-    settlements = execute("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
+    settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     if request.method == 'POST':
         form_data = request.form  # bekerjuk a form adatait
@@ -35,17 +35,16 @@ def index():
             if password != passwordagain:
                 errormsg += "A két jelszó nem egyezik. "
                 correct = False
-            check_nick = execute(f"SELECT nick FROM Users WHERE nick = '{nick}'")
+            check_nick = exec_return(f"SELECT nick FROM Users WHERE nick = '{nick}'")
             if check_nick[1]:   # True, ha nem ures
                 errormsg += "A beírt nicknév már foglalt. "
                 correct = False
             if len(location) < 1:
                 errormsg += "Adja meg a települést, ahonnan származik. "
                 correct = False
-            # TODO: convert date (error: expected DATE got NUMBER)
             # juzer elmentese
             if correct:
-                execute(f"INSERT INTO Users VALUES('{nick}', '{email}', '{password}', '{fullname}', {location}, {birthdate})")
+                exec_noreturn(f"INSERT INTO Users VALUES('{nick}', '{email}', '{password}', '{fullname}', {location}, TO_DATE('{birthdate}', 'YYYY-MM-DD'))")
                 return redirect(url_for('profile'))
     return render_template('index.html', settlements=settlements, errormsg=errormsg)
 
@@ -53,7 +52,7 @@ def index():
 # profile.html
 @app.route('/profile')
 def profile():
-    data = execute("SELECT * FROM Countries")
+    data = exec_return("SELECT * FROM Countries")
     return render_template('profile.html', colnames=data[0], rows=data[1])
 
 
