@@ -13,10 +13,9 @@ CREATE TABLE Settlements (
 );
 
 CREATE TABLE Users (
-    Id NUMBER(10) NOT NULL PRIMARY KEY,
+    Nick VARCHAR2(20) NOT NULL PRIMARY KEY,
     Email VARCHAR2(50) NOT NULL,
     Password VARCHAR2(30) NOT NULL,
-    Nick VARCHAR2(20) NOT NULL,
     Fullname VARCHAR2(50) NOT NULL,
     Location NUMBER(7) NOT NULL,
     Birthdate DATE NOT NULL,
@@ -25,9 +24,11 @@ CREATE TABLE Users (
 
 CREATE TABLE Pictures (
     Filename VARCHAR2(20) NOT NULL PRIMARY KEY,
+    Author VARCHAR2(20) NOT NULL,
     Title VARCHAR2(30) NOT NULL,
     Description VARCHAR2(150),
     Location NUMBER(7),
+    FOREIGN KEY (Author) REFERENCES Users(Nick),
     FOREIGN KEY (Location) REFERENCES Settlements(Id)
 );
 
@@ -40,8 +41,8 @@ CREATE TABLE Categories (
 CREATE TABLE Ratings (
     Stars NUMBER(1) NOT NULL,
     Picture VARCHAR2(20) NOT NULL,
-    Userid NUMBER(10) NOT NULL,
-    PRIMARY KEY(Picture, Userid),
+    Usernick VARCHAR2(20) NOT NULL,
+    PRIMARY KEY(Picture, Usernick),
     FOREIGN KEY (Picture) REFERENCES Pictures(Filename),
-    FOREIGN KEY (Userid) REFERENCES Users(Id)
+    FOREIGN KEY (Usernick) REFERENCES Users(Nick)
 );

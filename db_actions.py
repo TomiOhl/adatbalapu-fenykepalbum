@@ -2,14 +2,16 @@ import cx_Oracle
 import config
 
 
+def connect():
+    con = cx_Oracle.connect(config.username, config.password, config.dsn, encoding=config.encoding)
+    return con
+
+
 def execute(query):
+    colnames = []
     out = []
     try:
-        with cx_Oracle.connect(
-                config.username,
-                config.password,
-                config.dsn,
-                encoding=config.encoding) as connection:
+        with connect() as connection:
             # itt kellenek a db-műveletek
             with connection.cursor() as cursor:
                 cursor.execute(query)

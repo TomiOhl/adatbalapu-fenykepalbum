@@ -26,10 +26,10 @@
                     <span>Bejelentkezés</span>
                 </div>
                 <label for="email">E-mail<br>
-                    <input id="email" type="email" placeholder="E-mail" required>
+                    <input id="email" name="loginemail" type="email" placeholder="E-mail" required>
                 </label> <br>
                 <label for="password">Jelszó<br>
-                    <input id="password" type="password" placeholder="Jelszó" required>
+                    <input id="password" name="loginpassword" type="password" placeholder="Jelszó" required>
                 </label> <br>
                 <input type="hidden" name="login" value="login"/>
                 <button type="submit" class="btn btn-primary" value="login">Bejelentkezés</button>
@@ -56,18 +56,18 @@
                 <form method="POST" action="">
                     <div class="modal-body">
                         Egy perc múlva részese lehet eme csodálatos utazásnak!<br><br>
-                        <input type="email" placeholder="E-mail" required>
-                        <input type="password" placeholder="Jelszó" required>
-                        <input type="password" placeholder="Jelszó újra" required>
-                        <input type="text" placeholder="Nicknév" required>
-                        <input type="text" placeholder="Teljes név" required>
+                        <input type="email" name="email" placeholder="E-mail" maxlength="50" required>
+                        <input type="password" name="password" placeholder="Jelszó" maxlength="30" required>
+                        <input type="password" name="passwordagain" placeholder="Jelszó újra" maxlength="30" required>
+                        <input type="text" name="nick" placeholder="Nicknév" maxlength="20" required>
+                        <input type="text" name="fullname" placeholder="Teljes név" maxlength="50" required>
                         <select name="location">
                             <option selected hidden value="">Tartózkodási hely</option>
-                            {% for hely in helyek %}
-                                <option value="{{szam[0]}}">{{szam[1]}}</option>
+                            {% for s in settlements %}
+                                <option value="{{s[0]}}">{{s[1]}}</option>
                             {% endfor %}
                         </select> <br>
-                        <input onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Születési dátum" name= "birthdate" required/> <br>
+                        <input onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Születési dátum" name="birthdate" required/> <br>
                     </div>
                     <div class="modal-footer">
                         <a href="#" data-dismiss="modal" class="btn">Mégse</a>
@@ -82,6 +82,14 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    {% if errormsg|length > 0 %}
+        <script>
+          //ha volt egy errorunk
+          $(document).ready(function(){
+            alert("{{errormsg}}");
+          });
+        </script>
+    {% endif %}
 
 </body>
 
