@@ -16,8 +16,14 @@ def index():
             # juzer bejelentkeztetese
             login_email = form_data.get('loginemail')
             login_password = form_data.get('loginpassword')
-            # TODO: check if benne van-e a juzer az adatbazisban
-            return redirect(url_for('profile'))
+            check_user = exec_return(f"SELECT email, password FROM Users WHERE email = '{login_email}'")
+            if check_user[1]:  # True, ha letezik a felhasznalo
+                if check_user[1][0][1] == login_password:   # mert egy kételemű lista egyetlen elemének második eleme...
+                    return redirect(url_for('profile'))     # TODO: munkamenet inditasa
+                else:
+                    errormsg = "A megadott jelszó hibás."
+            else:
+                errormsg = "A megadott e-mail helytelen."
         elif 'signup' in form_data:
             # adatok valtozokba
             email = form_data.get('email')
