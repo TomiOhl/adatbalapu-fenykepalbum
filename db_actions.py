@@ -2,9 +2,9 @@ import cx_Oracle
 import config
 
 
-def exec(query):
+def execute(query):
+    out = []
     try:
-        out = []
         with cx_Oracle.connect(
                 config.username,
                 config.password,
@@ -18,4 +18,4 @@ def exec(query):
                     out.append(result)
     except cx_Oracle.Error as error:
         print(error)
-    return (colnames, out)
+    return colnames, out

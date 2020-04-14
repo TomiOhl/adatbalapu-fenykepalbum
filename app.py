@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for, redirect
-from db_actions import exec
+from db_actions import execute
 
 app = Flask(__name__)
 
@@ -8,15 +8,21 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # ha benne van a juzer az adatbazisban
-        return redirect(url_for('profile'))
+        hidden_info = request.form  # bekerjuk a form adatait, a hidden input tagek neve szerint dontunk
+        if 'login' in hidden_info:
+            # TODO: check if benne van-e a juzer az adatbazisban
+            return redirect(url_for('profile'))
+        elif 'signup' in hidden_info:
+            # TODO: elmenteni a juzert
+            return redirect(url_for('profile'))
+
     return render_template('index.html')
 
 
 # profile.html
 @app.route('/profile')
 def profile():
-    data = exec("SELECT * FROM Countries")
+    data = execute("SELECT * FROM Countries")
     return render_template('profile.html', colnames=data[0], rows=data[1])
 
 

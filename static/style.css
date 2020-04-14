@@ -122,7 +122,6 @@ form select:hover, .modal-body select:hover {
 /*--- footer ---*/
 footer {
     display: block;
-    background-color: linear-gradient(#00a8ff, #0266c8);
     padding: 7px;
     height: 37px;
     width: 100%;
