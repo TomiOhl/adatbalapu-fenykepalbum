@@ -1,12 +1,16 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session
 from db_actions import exec_return, exec_noreturn
 
 app = Flask(__name__)
+app.secret_key = "super secret key"
 
 
 # index.html
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # ha be lennenk jelentkezve, menjunk is tovabb a profilra
+    if 'nick' in session:
+        return redirect(url_for('profile'))
     # regisztracio lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
@@ -16,10 +20,12 @@ def index():
             # juzer bejelentkeztetese
             login_email = form_data.get('loginemail')
             login_password = form_data.get('loginpassword')
-            check_user = exec_return(f"SELECT email, password FROM Users WHERE email = '{login_email}'")
+            check_user = exec_return(f"SELECT email, password, nick FROM Users WHERE email = '{login_email}'")
             if check_user[1]:  # True, ha letezik a felhasznalo
                 if check_user[1][0][1] == login_password:  # mert egy kételemű lista egyetlen elemének második eleme...
-                    return redirect(url_for('profile'))  # TODO: munkamenet inditasa
+                    session['nick'] = check_user[1][0][2]
+                    session.permanent = True
+                    return redirect(url_for('profile'))
                 else:
                     errormsg = "A megadott jelszó hibás."
             else:
@@ -52,6 +58,8 @@ def index():
             if correct:
                 exec_noreturn(
                     f"INSERT INTO Users VALUES('{nick}', '{email}', '{password}', '{fullname}', {location}, TO_DATE('{birthdate}', 'YYYY-MM-DD'))")
+                session['nick'] = nick
+                session.permanent = True
                 return redirect(url_for('profile'))
     return render_template('index.html', settlements=settlements, errormsg=errormsg)
 
@@ -59,6 +67,9 @@ def index():
 # profile.html
 @app.route('/profile')
 def profile():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     data = exec_return("SELECT * FROM Countries")
     return render_template('profile.html', colnames=data[0], rows=data[1])
 
@@ -66,25 +77,34 @@ def profile():
 # categpries.html
 @app.route('/categories')
 def categories():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     return render_template('categories.html')
 
 
 # mostactive.html
 @app.route('/mostactive')
 def mostactive():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     return render_template('mostactive.html')
 
 
 # worldmap.html
 @app.route('/worldmap')
 def worldmap():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     return render_template('worldmap.html')
 
 
 # logout process
 @app.route('/logout')
 def logout():
-    # TODO: user session befejezése
+    session.pop('nick', None)
     return redirect(url_for('index'))
 
 
