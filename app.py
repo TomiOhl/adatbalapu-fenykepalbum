@@ -18,8 +18,8 @@ def index():
             login_password = form_data.get('loginpassword')
             check_user = exec_return(f"SELECT email, password FROM Users WHERE email = '{login_email}'")
             if check_user[1]:  # True, ha letezik a felhasznalo
-                if check_user[1][0][1] == login_password:   # mert egy kételemű lista egyetlen elemének második eleme...
-                    return redirect(url_for('profile'))     # TODO: munkamenet inditasa
+                if check_user[1][0][1] == login_password:  # mert egy kételemű lista egyetlen elemének második eleme...
+                    return redirect(url_for('profile'))  # TODO: munkamenet inditasa
                 else:
                     errormsg = "A megadott jelszó hibás."
             else:
@@ -42,7 +42,7 @@ def index():
                 errormsg += "A két jelszó nem egyezik. "
                 correct = False
             check_nick = exec_return(f"SELECT nick FROM Users WHERE nick = '{nick}'")
-            if check_nick[1]:   # True, ha nem ures
+            if check_nick[1]:  # True, ha nem ures
                 errormsg += "A beírt nicknév már foglalt. "
                 correct = False
             if len(location) < 1:
@@ -50,7 +50,8 @@ def index():
                 correct = False
             # juzer elmentese
             if correct:
-                exec_noreturn(f"INSERT INTO Users VALUES('{nick}', '{email}', '{password}', '{fullname}', {location}, TO_DATE('{birthdate}', 'YYYY-MM-DD'))")
+                exec_noreturn(
+                    f"INSERT INTO Users VALUES('{nick}', '{email}', '{password}', '{fullname}', {location}, TO_DATE('{birthdate}', 'YYYY-MM-DD'))")
                 return redirect(url_for('profile'))
     return render_template('index.html', settlements=settlements, errormsg=errormsg)
 
@@ -78,6 +79,13 @@ def mostactive():
 @app.route('/worldmap')
 def worldmap():
     return render_template('worldmap.html')
+
+
+# logout process
+@app.route('/logout')
+def logout():
+    # TODO: user session befejezése
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
