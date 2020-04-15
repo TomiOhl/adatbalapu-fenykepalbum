@@ -131,16 +131,17 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script>
         //adatok atadasa a megfelelo html elemeknek
-        //szemelyes adatok modositasa
+        //szemelyes adatok modositasa dialog
         $('#modal-personal').on('show.bs.modal', function (event) {
             const adat = $(event.relatedTarget).data('val').split(",");
             //a datum trukkos
-            const d = new Date(adat[3]);
-            const datestring = d.getFullYear()  + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); //ez undorito de legalabb nem is mukodik :)
+            let d = new Date(adat[3]);
+            const datestring = d.getFullYear()  + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); //ez undorito de legalabb mukodik, html-nek 2020-03-11 formatum kell
+            //a html tagek megkapjak a jelenlegi ertekeket
             $(this).find("#editfullname").val(adat[0]);
             $(this).find("#editemail").val(adat[1]);
             $(this).find("#editlocation option:selected").text("Lakhely: " + adat[2]);
-            $(this).find("#editbirthdate").val(adat[datestring]);
+            $(this).find("#editbirthdate").val(datestring);
             $(this).find("#personalhidden").val(adat[4]);
         });
     </script>
