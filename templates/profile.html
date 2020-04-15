@@ -139,7 +139,6 @@
             const datestring = d.getFullYear()  + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); //ez undorito de legalabb nem is mukodik :)
             $(this).find("#editfullname").val(adat[0]);
             $(this).find("#editemail").val(adat[1]);
-            //$(this).find("#editpassword").val(adat[5]);
             $(this).find("#editlocation option:selected").text("Lakhely: " + adat[2]);
             $(this).find("#editbirthdate").val(adat[datestring]);
             $(this).find("#personalhidden").val(adat[4]);
