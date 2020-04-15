@@ -76,7 +76,7 @@ input {
     border-radius: 6px;
     padding: 3pt;
     margin: 5px;
-    width: 225pt;
+    width: 235pt;
 }
 input:hover {
     box-shadow: 1px 1px 1px 1px #3029299a;
@@ -106,7 +106,7 @@ form select, .modal-body select {
     border-radius: 6px;
     padding: 3pt;
     margin: 5px;
-    width: 225pt;
+    width: 235pt;
 }
 form select:hover, .modal-body select:hover {
     box-shadow: 1px 1px 1px 1px #3029299a;
@@ -116,8 +116,8 @@ form select:hover, .modal-body select:hover {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
-    max-width: 225pt;
-    width: 225pt;
+    max-width: 235pt;
+    width: 235pt;
 }
 #personalinfo {
     display: inline-block;
@@ -127,9 +127,13 @@ form select:hover, .modal-body select:hover {
     margin-bottom: 25px;
     padding: 12px;
     border-radius: 12px;
+    text-align: start;
 }
 #personalinfo:hover {
     box-shadow: 0 6px 6px 0 #3029299a;
+}
+.center {
+    text-align: center;
 }
 /*--- footer ---*/
 footer {

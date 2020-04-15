@@ -14,6 +14,7 @@ def index():
     # regisztracio lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
+    # formok kezelese
     if request.method == 'POST':
         form_data = request.form  # bekerjuk a form adatait
         if 'login' in form_data:  # a hidden input tagek neve szerint dontunk, login vagy signup-e
@@ -65,7 +66,7 @@ def index():
 
 
 # profile.html
-@app.route('/profile')
+@app.route('/profile',  methods=['GET', 'POST'])
 def profile():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
@@ -74,8 +75,43 @@ def profile():
     # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
-    # szemelyes adatok megjelenitese
+    # nick lekerese
     nick = session.get('nick')
+    # formok kezelese
+    if request.method == 'POST':
+        form_data = request.form  # bekerjuk a formok adatait
+        if 'personalhidden' in form_data:  # a hidden input tagek neve szerint dontunk, melyik form volt
+            # adatok valtozokba
+            fullname = form_data.get('fullname')
+            email = form_data.get('email')
+            password = form_data.get('password')
+            passwordagain = form_data.get('passwordagain')
+            location = form_data.get('location')
+            birthdate = form_data.get('birthdate')
+            # olyan validacio, amire a html nem volt eleg (jelszo es nick egyedisege)
+            correct = True
+            if len(password.strip()) != 0:
+                if len(password) < 8:
+                    errormsg += "A jelszónak legalább 8 karakter hosszúnak kell lennie. "
+                    correct = False
+                if password != passwordagain:
+                    errormsg += "A két jelszó nem egyezik. "
+                    correct = False
+            else:
+                passwordquery = exec_return(f"SELECT password FROM Users WHERE nick = '{nick}'")
+                password = passwordquery[1][0][0]
+            # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
+            if ':' in location:
+                locationname = location.split(":")[1].strip()
+                locationquery = exec_return(f"SELECT Id FROM Settlements WHERE name = '{locationname}'")
+                location = locationquery[1][0][0]
+            # mentsuk el a modositott adatokat
+            if correct:
+                exec_noreturn(f"""UPDATE Users\
+                                    SET email = '{email}', password = '{password}', fullname = '{fullname}',\
+                                    location = {location}, birthdate = TO_DATE('{birthdate}', 'YYYY-MM-DD')\
+                                    WHERE nick = '{nick}'""")
+    # szemelyes adatok lekerese
     personaldata = exec_return(f"""SELECT nick, email, password, fullname, Settlements.name, Countries.name, birthdate\
                                     FROM Users, Settlements, Countries\
                                     WHERE nick = '{nick}'\
