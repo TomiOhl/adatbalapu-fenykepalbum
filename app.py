@@ -70,11 +70,14 @@ def profile():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    data = exec_return("SELECT * FROM Countries")
+    data = exec_return("SELECT * FROM Countries")   # csak demo
+    # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
+    settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
+    errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     # szemelyes adatok megjelenitese
     nick = session.get('nick')
     personaldata = exec_return(f"SELECT nick, email, password, fullname, Settlements.name, Countries.name, birthdate FROM Users, Settlements, Countries WHERE nick = '{nick}' and Users.location = Settlements.Id and Settlements.country = Countries.Id")
-    return render_template('profile.html', personaldata=personaldata, colnames=data[0], rows=data[1])
+    return render_template('profile.html', personaldata=personaldata, settlements=settlements, colnames=data[0], rows=data[1])
 
 
 # categpries.html
