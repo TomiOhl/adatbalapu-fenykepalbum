@@ -71,7 +71,10 @@ def profile():
     if 'nick' not in session:
         return redirect(url_for('index'))
     data = exec_return("SELECT * FROM Countries")
-    return render_template('profile.html', colnames=data[0], rows=data[1])
+    # szemelyes adatok megjelenitese
+    nick = session.get('nick')
+    personaldata = exec_return(f"SELECT nick, email, password, fullname, Settlements.name, Countries.name, birthdate FROM Users, Settlements, Countries WHERE nick = '{nick}' and Users.location = Settlements.Id and Settlements.country = Countries.Id")
+    return render_template('profile.html', personaldata=personaldata, colnames=data[0], rows=data[1])
 
 
 # categpries.html

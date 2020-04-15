@@ -119,6 +119,18 @@ form select:hover, .modal-body select:hover {
     max-width: 225pt;
     width: 225pt;
 }
+#personalinfo {
+    display: inline-block;
+    border: 1px solid #f195ac;
+    color: black;
+    background-color: whitesmoke;
+    margin-bottom: 25px;
+    padding: 12px;
+    border-radius: 12px;
+}
+#personalinfo:hover {
+    box-shadow: 0 6px 6px 0 #3029299a;
+}
 /*--- footer ---*/
 footer {
     display: block;

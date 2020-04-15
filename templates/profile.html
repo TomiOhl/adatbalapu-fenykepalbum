@@ -43,7 +43,7 @@
         <header class="page-header header">
 
             <div class="description">
-                <h1>Üdvözöljük</h1>
+                <h1>Üdvözöljük {{ session.get('nick') }}</h1>
                 <p>Alant láthatja a saját profilját.</p>
             </div>
 
@@ -51,6 +51,20 @@
 
         <section>
 
+            <!-- sorrend: ['NICK', 'EMAIL', 'PASSWORD', 'FULLNAME', 'SETTLEMENTS.NAME', 'COUNTRIES.NAME', 'BIRTHDATE'] -->
+            <div id="personalinfo">
+                Teljes név: {{ personaldata[1][0][3] }} <br>
+                E-mail: {{ personaldata[1][0][1] }} <br>
+                Lakhely: {{ personaldata[1][0][4] }}, {{ personaldata[1][0][5] }} <br>
+                Születési dátum: {{ personaldata[1][0][6].strftime('%Y.%m.%d.') }} <br>
+                <a href="#" class="btn-sm" data-toggle="modal" data-target="#modal-personal"
+                   data-val="{{ personaldata[1][0][3] }},{{ personaldata[1][0][1] }},{{ personaldata[1][0][4] }},{{ personaldata[1][0][6] }}"
+                >
+                    Módosítás
+                </a>
+            </div>
+
+            <!-- ez már csak teszt -->
             <h3>Demó lekérdezés</h3>
             <table>
                 <tr>
