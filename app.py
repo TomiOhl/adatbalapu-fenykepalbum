@@ -1,8 +1,17 @@
-from flask import Flask, render_template, request, url_for, redirect, session
+import os
+from datetime import datetime
+from flask import Flask, render_template, request, url_for, redirect, session, current_app
+from werkzeug.utils import secure_filename
+
 from db_actions import exec_return, exec_noreturn
+
+APP_FOLDER = os.path.realpath(os.path.dirname(__file__))
+UPLOAD_FOLDER = os.path.join(APP_FOLDER, "uploads")
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # index.html
@@ -111,11 +120,27 @@ def profile():
                                     SET email = '{email}', password = '{password}', fullname = '{fullname}',\
                                     location = {location}, birthdate = TO_DATE('{birthdate}', 'YYYY-MM-DD')\
                                     WHERE nick = '{nick}'""")
+
+        # fájlfeltöltés
+        # TODO: egy posztolási UI a megfelelő inputokkal, illetve a releváns SQL utasítás
+        elif 'uploadpic' in request.files:
+            file = request.files['uploadpic']
+            extension = file.filename.rsplit('.', 1)[1]
+            if file.filename == '':
+                errormsg += "Nincs kiválasztott kép. "
+            if file and '.' in file.filename and extension.lower() in ALLOWED_EXTENSIONS:
+                filename = secure_filename(str(datetime.now()) + "." + extension)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                errormsg += "A fájl sikeresen megosztásra került. "
+            else:
+                errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
+
     # szemelyes adatok lekerese
     personaldata = exec_return(f"""SELECT nick, email, password, fullname, Settlements.name, Countries.name, birthdate\
                                     FROM Users, Settlements, Countries\
                                     WHERE nick = '{nick}'\
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""")
+
     return render_template('profile.html', personaldata=personaldata, settlements=settlements, errormsg=errormsg, colnames=data[0], rows=data[1])
 
 

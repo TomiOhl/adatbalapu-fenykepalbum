@@ -52,7 +52,7 @@
         <section>
 
             <!-- sorrend: ['NICK', 'EMAIL', 'PASSWORD', 'FULLNAME', 'SETTLEMENTS.NAME', 'COUNTRIES.NAME', 'BIRTHDATE'] -->
-            <div id="personalinfo">
+            <div class="personal-card">
                 Teljes név: {{ personaldata[1][0][3] }} <br>
                 E-mail: {{ personaldata[1][0][1] }} <br>
                 Lakhely: {{ personaldata[1][0][4] }}, {{ personaldata[1][0][5] }} <br>
@@ -62,7 +62,13 @@
                 >
                     Módosítás
                 </a></div>
-            </div>
+            </div> <br>
+
+            <!-- feltöltés -->
+            <form method="post" action="" enctype="multipart/form-data" class="personal-card">
+                <input type="file" name="uploadpic" autocomplete="off" required>
+                <input type="submit" class="btn" value="Új kép feltöltése">
+            </form>
 
             <!-- ez már csak teszt -->
             <h3>Demó lekérdezés</h3>

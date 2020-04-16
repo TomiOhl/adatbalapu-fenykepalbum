@@ -119,7 +119,7 @@ form select:hover, .modal-body select:hover {
     max-width: 235pt;
     width: 235pt;
 }
-#personalinfo {
+.personal-card {
     display: inline-block;
     border: 1px solid #f195ac;
     color: black;
@@ -129,8 +129,15 @@ form select:hover, .modal-body select:hover {
     border-radius: 12px;
     text-align: start;
 }
-#personalinfo:hover {
+.personal-card:hover {
     box-shadow: 0 6px 6px 0 #3029299a;
+}
+.personal-card input {
+    border: 0;
+}
+.personal-card input:hover {
+    border: 0;
+    box-shadow: 0 0 0 0;
 }
 .center {
     text-align: center;
