@@ -23,7 +23,7 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Pictures (
-    Filename VARCHAR2(20) NOT NULL PRIMARY KEY,
+    Filename VARCHAR2(30) NOT NULL PRIMARY KEY,
     Author VARCHAR2(20) NOT NULL,
     Title VARCHAR2(30) NOT NULL,
     Description VARCHAR2(150),
@@ -34,13 +34,13 @@ CREATE TABLE Pictures (
 
 CREATE TABLE Categories (
     Name VARCHAR2(20) NOT NULL,
-    Pictureid VARCHAR2(20) NOT NULL,
+    Pictureid VARCHAR2(30) NOT NULL,
     FOREIGN KEY (Pictureid) REFERENCES Pictures(Filename)
 );
 
 CREATE TABLE Ratings (
     Stars NUMBER(1) NOT NULL,
-    Picture VARCHAR2(20) NOT NULL,
+    Picture VARCHAR2(30) NOT NULL,
     Usernick VARCHAR2(20) NOT NULL,
     PRIMARY KEY(Picture, Usernick),
     FOREIGN KEY (Picture) REFERENCES Pictures(Filename),

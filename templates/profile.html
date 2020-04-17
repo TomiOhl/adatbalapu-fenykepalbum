@@ -65,10 +65,39 @@
             </div> <br>
 
             <!-- feltöltés -->
-            <form method="post" action="" enctype="multipart/form-data" class="personal-card">
-                <input type="file" name="uploadpic" autocomplete="off" required>
-                <input type="submit" class="btn" value="Új kép feltöltése">
-            </form>
+            <button class="btn" data-toggle="modal" data-target="#modal-upload">Feltöltés</button>
+            <div class="modal fade" id="modal-upload" role="dialog" aria-labelledby="modal-upload" aria-hidden="true" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4>Feltöltés a Fényképalbumba</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <input type="file" name="uploadpic" autocomplete="off" required>
+                                <input type="text" name="title" placeholder="Kép neve" maxlength="30">
+                                <textarea class="form-control" rows="5" name="description" placeholder="Leírás" maxlength="150"></textarea>
+{#                                <input type="text" name="description" placeholder="Leiras" maxlength="150">#}
+                                <select name="location">
+                                    <option selected hidden value="">Kép készítésének a helye</option>
+                                    {% for s in settlements %}
+                                        <option value="{{s[0]}}">{{s[1]}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" data-dismiss="modal" class="btn">Mégse</a>
+                                <input type="hidden" name="upload" value="upload"/>
+                                <input type="submit" class="btn" value="Feltöltés"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- ez már csak teszt -->
             <h3>Demó lekérdezés</h3>

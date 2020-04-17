@@ -97,6 +97,7 @@ def profile():
             passwordagain = form_data.get('passwordagain')
             location = form_data.get('location')
             birthdate = form_data.get('birthdate')
+            print('reg: ' + birthdate)
             # olyan validacio, amire a html nem volt eleg (jelszo es nick egyedisege)
             correct = True
             if len(password.strip()) != 0:
@@ -116,21 +117,33 @@ def profile():
                 location = locationquery[1][0][0]
             # mentsuk el a modositott adatokat
             if correct:
+                print('vmi' + birthdate)
                 exec_noreturn(f"""UPDATE Users\
                                     SET email = '{email}', password = '{password}', fullname = '{fullname}',\
                                     location = {location}, birthdate = TO_DATE('{birthdate}', 'YYYY-MM-DD')\
                                     WHERE nick = '{nick}'""")
 
         # fájlfeltöltés
-        # TODO: egy posztolási UI a megfelelő inputokkal, illetve a releváns SQL utasítás
         elif 'uploadpic' in request.files:
             file = request.files['uploadpic']
             extension = file.filename.rsplit('.', 1)[1]
             if file.filename == '':
                 errormsg += "Nincs kiválasztott kép. "
             if file and '.' in file.filename and extension.lower() in ALLOWED_EXTENSIONS:
+                # adatok lementese valtozokba
                 filename = secure_filename(str(datetime.now()) + "." + extension)
+                title = form_data.get('title')
+                location = form_data.get('location')
+                description = form_data.get('description')
+                # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
+                if ':' in location:
+                    locationname = location.split(":")[1].strip()
+                    locationquery = exec_return(f"SELECT Id FROM Settlements WHERE name = '{locationname}'")
+                    location = locationquery[1][0][0]
+                # uploads folderbe mentése a kepnek
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                # kep feltoltese az adatbazisba
+                exec_noreturn(f"INSERT INTO Pictures VALUES ('{filename}', '{title}', '{description}', '{location}' )")
                 errormsg += "A fájl sikeresen megosztásra került. "
             else:
                 errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "

@@ -204,3 +204,9 @@ form > .modal-body {
 .modal-body select, .modal-body input {
     border: 1px solid lightgray;
 }
+.form-control {
+    resize: none;
+    margin-left: 16.5%;
+    width: 67%;
+    margin-right: 16.5%;
+}
