@@ -132,10 +132,10 @@ form select:hover, .modal-body select:hover {
 .personal-card:hover {
     box-shadow: 0 6px 6px 0 #3029299a;
 }
-.personal-card input {
+#uploadinput {
     border: 0;
 }
-.personal-card input:hover {
+#uploadinput:hover {
     border: 0;
     box-shadow: 0 0 0 0;
 }

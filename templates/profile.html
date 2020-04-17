@@ -77,10 +77,9 @@
                         </div>
                         <form method="POST" action="" enctype="multipart/form-data">
                             <div class="modal-body">
-                                <input type="file" name="uploadpic" autocomplete="off" required>
-                                <input type="text" name="title" placeholder="Kép neve" maxlength="30">
+                                <input type="file" id="uploadinput" name="uploadpic" autocomplete="off" required>
+                                <input type="text" name="title" placeholder="Kép neve" maxlength="30" autocomplete="off">
                                 <textarea class="form-control" rows="5" name="description" placeholder="Leírás" maxlength="150"></textarea>
-{#                                <input type="text" name="description" placeholder="Leiras" maxlength="150">#}
                                 <select name="location">
                                     <option selected hidden value="">Kép készítésének a helye</option>
                                     {% for s in settlements %}

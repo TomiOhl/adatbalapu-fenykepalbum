@@ -143,7 +143,7 @@ def profile():
                 # uploads folderbe mentése a kepnek
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 # kep feltoltese az adatbazisba
-                exec_noreturn(f"INSERT INTO Pictures VALUES ('{filename}', '{title}', '{description}', '{location}' )")
+                exec_noreturn(f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', {location} )")
                 errormsg += "A fájl sikeresen megosztásra került. "
             else:
                 errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
