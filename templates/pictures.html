@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="hu">
     <head>
-        <title>Fényképalbum - Világatlasz</title>
+        <title>Fényképalbum - Képek</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -22,16 +22,16 @@
                         <a class="nav-link" href="categories">Kategóriák</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pictures">Képeink</a>
+                        <a class="nav-link activetab" href="#">Képeink</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="mostactive">Legaktívabb arcok</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link activetab" href="#">Világatlasz</a>
+                        <a class="nav-link" href="worldmap">Világatlasz</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="profile" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ session.get('nick') }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -42,31 +42,28 @@
                 </ul>
             </div>
         </nav>
-
-        <header class="page-header header">
-
-            <div class="description">
-                <h1>Világatlasz</h1>
-                <p>Ha egy virtuális utazásra vágyna, tekintse meg a Föld különböző pontjain készített képeket.</p>
-            </div>
-
-        </header>
-
-        <section>
-
-
-
-        </section>
-
-    </div> <!-- minden -->
+        <div class="photo-grid">
+            {% for image_name in image_names %}
+                <div class="photo-grid__image-square">
+                    <img class="image" src=" {{url_for('send_image', filename=image_name)}}">
+                </div>
+            {% endfor %}
+    </div>
+    </div>
 
     <footer class="page-footer">
         <span class="left">2020, Köhlesläger</span>
         <span class="right">Fényképalbum</span>
     </footer>
-
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
+    {% if errormsg|length > 0 %}
+        <script>
+            //ha volt egy errorunk
+            $(document).ready(function(){
+                alert("{{errormsg}}");
+            });
+        </script>
+    {% endif %}
     </body>
 </html>

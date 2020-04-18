@@ -22,6 +22,9 @@
                         <a class="nav-link" href="categories">Kategóriák</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="pictures">Képeink</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="mostactive">Legaktívabb arcok</a>
                     </li>
                     <li class="nav-item">
@@ -96,26 +99,6 @@
                     </div>
                 </div>
             </div>
-
-
-            <!-- ez már csak teszt -->
-            <h3>Demó lekérdezés</h3>
-            <table>
-                <tr>
-                {% for colname in colnames %}
-                    <th>{{ colname }}</th>
-                {% endfor %}
-                </tr>
-
-                {% for row in rows %}
-                <tr>
-                    {% for col in row %}
-                    <td>{{col}}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
-
         </section>
 
     </div> <!-- minden -->

@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, url_for, redirect, session, current_app
+from flask import Flask, render_template, request, url_for, redirect, session, send_from_directory
 from werkzeug.utils import secure_filename
 
 from db_actions import exec_return, exec_noreturn
@@ -75,12 +75,11 @@ def index():
 
 
 # profile.html
-@app.route('/profile',  methods=['GET', 'POST'])
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    data = exec_return("SELECT * FROM Countries")   # csak demo
     # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
@@ -97,7 +96,6 @@ def profile():
             passwordagain = form_data.get('passwordagain')
             location = form_data.get('location')
             birthdate = form_data.get('birthdate')
-            print('reg: ' + birthdate)
             # olyan validacio, amire a html nem volt eleg (jelszo es nick egyedisege)
             correct = True
             if len(password.strip()) != 0:
@@ -117,7 +115,6 @@ def profile():
                 location = locationquery[1][0][0]
             # mentsuk el a modositott adatokat
             if correct:
-                print('vmi' + birthdate)
                 exec_noreturn(f"""UPDATE Users\
                                     SET email = '{email}', password = '{password}', fullname = '{fullname}',\
                                     location = {location}, birthdate = TO_DATE('{birthdate}', 'YYYY-MM-DD')\
@@ -125,28 +122,7 @@ def profile():
 
         # fájlfeltöltés
         elif 'uploadpic' in request.files:
-            file = request.files['uploadpic']
-            extension = file.filename.rsplit('.', 1)[1]
-            if file.filename == '':
-                errormsg += "Nincs kiválasztott kép. "
-            if file and '.' in file.filename and extension.lower() in ALLOWED_EXTENSIONS:
-                # adatok lementese valtozokba
-                filename = secure_filename(str(datetime.now()) + "." + extension)
-                title = form_data.get('title')
-                location = form_data.get('location')
-                description = form_data.get('description')
-                # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
-                if ':' in location:
-                    locationname = location.split(":")[1].strip()
-                    locationquery = exec_return(f"SELECT Id FROM Settlements WHERE name = '{locationname}'")
-                    location = locationquery[1][0][0]
-                # uploads folderbe mentése a kepnek
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                # kep feltoltese az adatbazisba
-                exec_noreturn(f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', {location} )")
-                errormsg += "A fájl sikeresen megosztásra került. "
-            else:
-                errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
+            upload(form_data, nick)
 
     # szemelyes adatok lekerese
     personaldata = exec_return(f"""SELECT nick, email, password, fullname, Settlements.name, Countries.name, birthdate\
@@ -154,10 +130,51 @@ def profile():
                                     WHERE nick = '{nick}'\
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""")
 
-    return render_template('profile.html', personaldata=personaldata, settlements=settlements, errormsg=errormsg, colnames=data[0], rows=data[1])
+    return render_template('profile.html', personaldata=personaldata, settlements=settlements, errormsg=errormsg)
 
+@app.route('/uploadpic', methods=['POST'])
+def upload(form_data, nick):
+    errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
+    file = request.files['uploadpic']
+    extension = file.filename.rsplit('.', 1)[1]
+    if file.filename == '':
+        errormsg += "Nincs kiválasztott kép. "
+    if file and '.' in file.filename and extension.lower() in ALLOWED_EXTENSIONS:
+        # adatok lementese valtozokba
+        filename = secure_filename(str(datetime.now()) + "." + extension)
+        title = form_data.get('title')
+        location = form_data.get('location')
+        description = form_data.get('description')
+        # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
+        if ':' in location:
+            locationname = location.split(":")[1].strip()
+            locationquery = exec_return(f"SELECT Id FROM Settlements WHERE name = '{locationname}'")
+            location = locationquery[1][0][0]
+        # uploads folderbe mentése a kepnek
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # kep feltoltese az adatbazisba
+        exec_noreturn(
+            f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', {location} )")
+    else:
+        errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
 
-# categpries.html
+# feltoltott kép jelenjen meg a pictures.html-ben
+@app.route('/uploadpic/<filename>')
+def send_image(filename):
+    return send_from_directory("uploads", filename)
+
+# képeink oldal tartalma
+# TODO: az adott felhasználóhoz tartozó képek jelenjenek meg
+@app.route('/pictures')
+def get_images():
+    # author = session.get('nick')
+    # image_names = list()
+    images_dir = os.listdir('./uploads')
+    images_dir.remove('.gitignore')
+    # images_database = exec_return(f"SELECT * FROM Pictures WHERE AUTHOR = '{author}'")
+    return render_template("pictures.html", image_names=images_dir)
+
+# categories.html
 @app.route('/categories')
 def categories():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
@@ -189,6 +206,14 @@ def worldmap():
 def logout():
     session.pop('nick', None)
     return redirect(url_for('index'))
+
+
+# fenykepeink oldal
+@app.route('/pictures')
+def pictures():
+    if 'nick' not in session:
+        return redirect(url_for('index'))
+    return render_template('pictures.html')
 
 
 if __name__ == "__main__":
