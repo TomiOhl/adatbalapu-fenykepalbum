@@ -217,7 +217,7 @@ form > .modal-body {
 	 gap: 12px;
 	 box-sizing: border-box;
 }
- .photo-grid__image-square {
+/* .photo-grid__image-square {
 	 padding-bottom: 100%;
 	 position: relative;
 }
@@ -230,7 +230,7 @@ form > .modal-body {
 	 top: 0;
 	 left: 0;
 }
-/*
+!*
 kattintható legyen a kép
 .memorie {
 	 width: 100%;
@@ -238,11 +238,32 @@ kattintható legyen a kép
 	 transition: 50ms;
 	 cursor: pointer;
 	 position: relative;
-}*/
-
+}*!
+*/
 .image {
 	 display: block;
 	 width: 100%;
 	 height: 100%;
 	 object-fit: cover;
+}
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 180px;
+    gap: 12px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+    width: 100%;
+    height: 200px;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
 }

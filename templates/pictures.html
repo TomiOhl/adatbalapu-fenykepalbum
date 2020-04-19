@@ -42,13 +42,12 @@
                 </ul>
             </div>
         </nav>
-        <div class="photo-grid">
-            {% for image_name in image_names %}
-                <div class="photo-grid__image-square">
-                    <img class="image" src=" {{url_for('send_image', filename=image_name)}}">
-                </div>
-            {% endfor %}
-    </div>
+        {% for image_name, description in image_names.items() %}
+            <div class="gallery">
+                <img class="image" src=" {{url_for('send_image', filename=image_name)}}">
+                <div class="desc">{{ description }}</div>
+            </div>
+        {% endfor %}
     </div>
 
     <footer class="page-footer">

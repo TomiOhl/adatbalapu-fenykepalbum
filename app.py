@@ -132,29 +132,36 @@ def profile():
 
     return render_template('profile.html', personaldata=personaldata, settlements=settlements, errormsg=errormsg)
 
+
 @app.route('/uploadpic', methods=['POST'])
 def upload(form_data, nick):
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     file = request.files['uploadpic']
     extension = file.filename.rsplit('.', 1)[1]
+    correct = True
     if file.filename == '':
         errormsg += "Nincs kiválasztott kép. "
+        correct = False
     if file and '.' in file.filename and extension.lower() in ALLOWED_EXTENSIONS:
         # adatok lementese valtozokba
         filename = secure_filename(str(datetime.now()) + "." + extension)
         title = form_data.get('title')
         location = form_data.get('location')
         description = form_data.get('description')
+        if len(description) > 150:
+            errormsg += "A leiras maximum 150 karakter hosszú lehet. "
+            correct = False
         # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
         if ':' in location:
             locationname = location.split(":")[1].strip()
             locationquery = exec_return(f"SELECT Id FROM Settlements WHERE name = '{locationname}'")
             location = locationquery[1][0][0]
         # uploads folderbe mentése a kepnek
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # kep feltoltese az adatbazisba
-        exec_noreturn(
-            f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', {location} )")
+        if correct:
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # kep feltoltese az adatbazisba
+            exec_noreturn(
+                f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', '{location}' )")
     else:
         errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
 
@@ -164,15 +171,23 @@ def send_image(filename):
     return send_from_directory("uploads", filename)
 
 # képeink oldal tartalma
-# TODO: az adott felhasználóhoz tartozó képek jelenjenek meg
 @app.route('/pictures')
 def get_images():
-    # author = session.get('nick')
-    # image_names = list()
-    images_dir = os.listdir('./uploads')
-    images_dir.remove('.gitignore')
-    # images_database = exec_return(f"SELECT * FROM Pictures WHERE AUTHOR = '{author}'")
-    return render_template("pictures.html", image_names=images_dir)
+    author = session.get('nick')
+    image_names = dict()
+    i = 0
+    # az uploads-ban lévő képek kilistázása
+    images_dir = os.listdir(app.config['UPLOAD_FOLDER'])
+    # az adatbázisban lévő képek kilistázása
+    images_database = exec_return(f"SELECT Filename, Description FROM Pictures WHERE AUTHOR = '{author}'")
+    for image in images_dir:
+        # mivel tuple-t ad vissza az adatbazis ezert a másodikban lévő lista fájlneveit át kell alakítani str-é
+        if image in (str(images_database[1])):
+            # megegyező nevű képeket dictionarybe gyűjtük a {kép neve : leiras }
+            image_names.update({image: images_database[1][i][1]})
+            i += 1
+    return render_template("pictures.html", image_names=image_names)
+
 
 # categories.html
 @app.route('/categories')
