@@ -1,0 +1,253 @@
+[ Afrika ]
+Algéria
+Angola
+Benin
+Botswana
+Burkina Faso
+Burundi
+Comore-szigetek
+Csád
+Dzsibuti
+Dél-Afrika
+Egyenlítői-Guinea
+Egyiptom
+Elefántcsontpart
+Eritrea
+Etiópia
+Gabon
+Gambia
+Ghána
+Guinea
+Guinea-Bissau
+Kamerun
+Kenya
+Kongó
+Kongó - Kinshasa
+Közép-afrikai Köztársaság
+Lesotho
+Libéria
+Líbia
+Madagaszkár
+Malawi
+Mali
+Marokkó
+Mauritius
+Mauritánia
+Mayotte
+Mozambik
+Namíbia
+Niger
+Nigéria
+Nyugat-Szahara
+Reunion
+Ruanda
+Sao Tomé és Príncipe
+Seychelle-szigetek
+Sierra Leone
+Szenegál
+Szent Helena
+Szomália
+Szudán
+Szváziföld
+Tanzánia
+Togo
+Tunézia
+Uganda
+Zambia
+Zimbabwe
+Zöld-foki Köztársaság
+[ Amerika ]
+Amerikai Virgin-szigetek
+Anguilla
+Antigua és Barbuda
+Argentína
+Aruba
+Bahamák
+Barbados
+Belize
+Bermuda
+Bolívia
+Brazília
+Brit Virgin-szigetek
+Chile
+Costa Rica
+Dominika
+Dominikai Köztársaság
+Ecuador
+Egyesült Államok
+Falkland-szigetek
+Francia Guyana
+Grenada
+Grönland
+Guadeloupe
+Guatemala
+Guyana
+Haiti
+Holland Antillák
+Honduras
+Jamaica
+Kajmán-szigetek
+Kanada
+Kolumbia
+Kuba
+Martinique
+Mexikó
+Montserrat
+Nicaragua
+Panama
+Paraguay
+Peru
+Puerto Rico
+Saint Barthélemy
+Saint Kitts és Nevis
+Saint Martin
+Saint Pierre és Miquelon
+Saint Vincent és Grenadines
+Salvador
+Santa Lucia
+Suriname
+Trinidad és Tobago
+Turks- és Caicos-szigetek
+Uruguay
+Venezuela
+[ Európa ]
+Aland-szigetek
+Albánia
+Andorra
+Ausztria
+Belgium
+Bosznia-Hercegovina
+Bulgária
+Ciprus
+Csehország
+Dánia
+Egyesült Királyság
+Fehéroroszország
+Feröer-szigetek
+Finnország
+Franciaország
+Gibraltár
+Guernsey
+Görögország
+Hollandia
+Horvátország
+Izland
+Jersey
+Lengyelország
+Lettország
+Liechtenstein
+Litvánia
+Luxemburg
+Macedónia
+Magyarország
+Man-sziget
+Moldova
+Monaco
+Montenegró
+Málta
+Norvégia
+Németország
+Olaszország
+Oroszország
+Portugália
+Románia
+San Marino
+Spanyolország
+Svalbard és Jan Mayen
+Svájc
+Svédország
+Szerbia
+Szerbia és Montenegró
+Szlovákia
+Szlovénia
+Ukrajna
+Vatikán
+Észtország
+Írország
+[ Ázsia ]
+Afganisztán
+Azerbajdzsán
+Bahrein
+Banglades
+Bhután
+Brunei
+Ciprus
+Dél-Korea
+Egyesült Arab Emirátus
+Fülöp-szigetek
+Grúzia
+Hongkong S.A.R, Kína
+India
+Indonézia
+Irak
+Irán
+Izrael
+Japán
+Jemen
+Jordánia
+Kambodzsa
+Katar
+Kazahsztán
+Kelet-Timor
+Kirgizisztán
+Kuvait
+Kína
+Laosz
+Libanon
+Makaó SAR Kína
+Malajzia
+Maldív-szigetek
+Mianmar
+Mongólia
+Nepál
+Omán
+Pakisztán
+Palesztin Terület
+Srí Lanka
+Szaúd-Arábia
+Szingapúr
+Szíria
+Tadzsikisztán
+Tajvan
+Thaiföld
+Törökország
+Türkmenisztán
+Vietnam
+Észak-Korea
+Örményország
+Üzbegisztán
+[ Óceánia ]
+Amerikai Csendes-óceáni Szigetek
+Amerikai Szamoa
+Antarktisz
+Ausztrália
+Bouvet-sziget
+Brit Indiai Oceán
+Cook-szigetek
+Dél Grúzia és a Déli Szendvics-szigetek
+Fidzsi
+Francia Déli Területek
+Francia Polinézia
+Guam
+Heard és McDonald Szigetek
+Karácsony-szigetek
+Kiribati
+Kókusz-szigetek
+Marshall-szigetek
+Mikronézia
+Nauru
+Niue
+Norfolk-sziget
+Palau
+Pitcairn-sziget
+Pápua Új-Guinea
+Salamon-szigetek
+Szamoa
+Tokelau
+Tonga
+Tuvalu
+Vanuatu
+Wallis és Futuna
+Északi Mariana-szigetek
+Új-Kaledónia
+Új-Zéland
