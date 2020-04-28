@@ -89,6 +89,12 @@
                                         <option value="{{s[0]}}">{{s[1]}}</option>
                                     {% endfor %}
                                 </select>
+                                <select name="category">
+                                    <option selected hidden value="">Kategória</option>
+                                    {% for cat in categories %}
+                                        <option value="{{cat}}">{{cat}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="modal-footer">
                                 <a href="#" data-dismiss="modal" class="btn">Mégse</a>

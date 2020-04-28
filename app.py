@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, url_for, redirect, session, s
 from werkzeug.utils import secure_filename
 
 from db_actions import exec_return, exec_noreturn
+from categories import CATEGORIES
 
 APP_FOLDER = os.path.realpath(os.path.dirname(__file__))
 UPLOAD_FOLDER = os.path.join(APP_FOLDER, "uploads")
@@ -130,7 +131,7 @@ def profile():
                                     WHERE nick = '{nick}'\
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""")
 
-    return render_template('profile.html', personaldata=personaldata, settlements=settlements, errormsg=errormsg)
+    return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES, errormsg=errormsg)
 
 
 @app.route('/uploadpic', methods=['POST'])
@@ -147,6 +148,7 @@ def upload(form_data, nick):
         filename = secure_filename(str(datetime.now()) + "." + extension)
         title = form_data.get('title')
         location = form_data.get('location')
+        category = form_data.get('category')
         description = form_data.get('description')
         if len(description) > 150:
             errormsg += "A leiras maximum 150 karakter hosszú lehet. "
@@ -159,9 +161,10 @@ def upload(form_data, nick):
         # uploads folderbe mentése a kepnek
         if correct:
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # kep feltoltese az adatbazisba
+            # kep feltoltese az adatbazisba, kategoria megadasa
             exec_noreturn(
                 f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', '{location}' )")
+            exec_noreturn(f"INSERT INTO Categories VALUES ('{category}', '{filename}')")
     else:
         errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
 
