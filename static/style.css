@@ -267,3 +267,7 @@ div.desc {
     padding: 15px;
     text-align: center;
 }
+
+.capitalize {
+    text-transform: capitalize;
+}

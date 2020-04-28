@@ -207,7 +207,8 @@ def categories():
     photos_from_category = []
     if chosencategory is not None:
         photos_from_category = exec_return(f"SELECT Pictureid FROM Categories where name = '{chosencategory}'")[1]
-    return render_template('categories.html', categories=CATEGORIES, photos=photos_from_category)
+    return render_template('categories.html', categories=CATEGORIES, chosencategory=chosencategory,
+                           photos=photos_from_category)
 
 
 # mostactive.html

@@ -56,11 +56,12 @@
 
             <!--kategoriak listaja-->
             {% for cat in categories %}
-                <a href="categories?cat={{cat}}" class="btn">{{cat}}</a>
+                <a href="categories?cat={{cat}}" class="btn capitalize">{{cat}}</a>
             {% endfor %}
             <br><br>
         
-            <!--a kivalasztott kategoria kepei-->
+            <!--a kivalasztott kategoria neve, kepei-->
+            <h3 class="capitalize">{{ chosencategory }}</h3>
             {% for photo in photos %}
                 <div class="gallery">
                     <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
