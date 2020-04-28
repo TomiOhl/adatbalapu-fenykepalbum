@@ -247,15 +247,15 @@ kattintható legyen a kép
 	 object-fit: cover;
 }
 div.gallery {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 180px;
+    margin: 12px 12px 0;
+    border: 1px solid #ccc;
+    width: 300px;
     gap: 12px;
 }
 
 div.gallery:hover {
-  border: 1px solid #777;
+    border: 1px solid #f195ac;
+    box-shadow: 1px 1px 1px 1px #3029299a;
 }
 
 div.gallery img {
@@ -264,6 +264,6 @@ div.gallery img {
 }
 
 div.desc {
-  padding: 15px;
-  text-align: center;
+    padding: 15px;
+    text-align: center;
 }

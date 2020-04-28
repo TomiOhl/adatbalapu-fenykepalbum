@@ -131,7 +131,8 @@ def profile():
                                     WHERE nick = '{nick}'\
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""")
 
-    return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES, errormsg=errormsg)
+    return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES,
+                           errormsg=errormsg)
 
 
 @app.route('/uploadpic', methods=['POST'])
@@ -168,10 +169,12 @@ def upload(form_data, nick):
     else:
         errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
 
+
 # feltoltott kép jelenjen meg a pictures.html-ben
 @app.route('/uploadpic/<filename>')
 def send_image(filename):
     return send_from_directory("uploads", filename)
+
 
 # képeink oldal tartalma
 @app.route('/pictures')
@@ -198,7 +201,13 @@ def categories():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    return render_template('categories.html')
+    # parameterben kapott kategoria
+    chosencategory = request.args.get('cat')
+    # fajlnevek lekerese a kapott kategoriabol
+    photos_from_category = []
+    if chosencategory is not None:
+        photos_from_category = exec_return(f"SELECT Pictureid FROM Categories where name = '{chosencategory}'")[1]
+    return render_template('categories.html', categories=CATEGORIES, photos=photos_from_category)
 
 
 # mostactive.html

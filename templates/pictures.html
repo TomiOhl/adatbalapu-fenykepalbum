@@ -42,12 +42,15 @@
                 </ul>
             </div>
         </nav>
+
+        <section>
         {% for image_name, description in image_names.items() %}
             <div class="gallery">
                 <img class="image" src=" {{url_for('send_image', filename=image_name)}}">
                 <div class="desc">{{ description }}</div>
             </div>
         {% endfor %}
+        </section>
     </div>
 
     <footer class="page-footer">

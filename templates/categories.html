@@ -54,7 +54,19 @@
 
         <section>
 
-
+            <!--kategoriak listaja-->
+            {% for cat in categories %}
+                <a href="categories?cat={{cat}}" class="btn">{{cat}}</a>
+            {% endfor %}
+            <br><br>
+        
+            <!--a kivalasztott kategoria kepei-->
+            {% for photo in photos %}
+                <div class="gallery">
+                    <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
+                </div>
+            {% endfor %}
+            <br>
 
         </section>
 
