@@ -247,6 +247,7 @@ kattintható legyen a kép
 	 object-fit: cover;
 }
 div.gallery {
+    display: inline-block;
     margin: 12px 12px 0;
     border: 1px solid #ccc;
     width: 300px;
@@ -264,7 +265,7 @@ div.gallery img {
 }
 
 div.desc {
-    padding: 15px;
+    padding: 12px;
     text-align: center;
 }
 

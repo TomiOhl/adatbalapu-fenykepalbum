@@ -105,6 +105,16 @@
                     </div>
                 </div>
             </div>
+            <br>
+
+            <!--saját képek-->
+            {% for photo in own_pictures %}
+                <div class="gallery">
+                    <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
+                    <div class="desc">{{ photo[1] }}</div>
+                </div>
+            {% endfor %}
+
         </section>
 
     </div> <!-- minden -->

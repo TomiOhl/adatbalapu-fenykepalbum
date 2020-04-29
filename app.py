@@ -81,11 +81,12 @@ def profile():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
-    settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
-    errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     # nick lekerese
     nick = session.get('nick')
+    # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
+    settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
+    own_pictures = exec_return(f"SELECT Filename, Description FROM Pictures WHERE author = '{nick}'")[1]
+    errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     # formok kezelese
     if request.method == 'POST':
         form_data = request.form  # bekerjuk a formok adatait
@@ -132,7 +133,7 @@ def profile():
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""")
 
     return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES,
-                           errormsg=errormsg)
+                           own_pictures=own_pictures, errormsg=errormsg)
 
 
 @app.route('/uploadpic', methods=['POST'])
@@ -185,7 +186,7 @@ def get_images():
     # az uploads-ban lévő képek kilistázása
     images_dir = os.listdir(app.config['UPLOAD_FOLDER'])
     # az adatbázisban lévő képek kilistázása
-    images_database = exec_return(f"SELECT Filename, Description FROM Pictures WHERE AUTHOR = '{author}'")
+    images_database = exec_return(f"SELECT Filename, Description FROM Pictures")
     for image in images_dir:
         # mivel tuple-t ad vissza az adatbazis ezert a másodikban lévő lista fájlneveit át kell alakítani str-é
         if image in (str(images_database[1])):
