@@ -85,7 +85,8 @@ def profile():
     nick = session.get('nick')
     # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
-    own_pictures = exec_return(f"SELECT Filename, Description FROM Pictures WHERE author = '{nick}'")[1]
+    # sajat kepek megjelenitese
+    own_pictures = exec_return(f"SELECT Filename, Title, Description FROM Pictures WHERE author = '{nick}'")[1]
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     # formok kezelese
     if request.method == 'POST':
@@ -185,14 +186,15 @@ def get_images():
     i = 0
     # az uploads-ban lévő képek kilistázása
     images_dir = os.listdir(app.config['UPLOAD_FOLDER'])
-    # az adatbázisban lévő képek kilistázása
-    images_database = exec_return(f"SELECT Filename, Description FROM Pictures")
+    # az adatbázisban lévő képek kilistázása filename szerint rendezve, ha már később a mappát járjuk be
+    images_database = exec_return(f"SELECT Filename, Description FROM Pictures ORDER BY Filename")
     for image in images_dir:
         # mivel tuple-t ad vissza az adatbazis ezert a másodikban lévő lista fájlneveit át kell alakítani str-é
         if image in (str(images_database[1])):
             # megegyező nevű képeket dictionarybe gyűjtük a {kép neve : leiras }
             image_names.update({image: images_database[1][i][1]})
             i += 1
+    print(image_names)
     return render_template("pictures.html", image_names=image_names)
 
 
