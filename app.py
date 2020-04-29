@@ -210,9 +210,9 @@ def categories():
     chosen_category_count = 0
     if chosencategory is not None:
         photos_from_category = exec_return(f"""SELECT Filename, Title, Description FROM Pictures, Categories\
-                                                WHERE filename = pictureid AND pictureid IN\
-                                                (SELECT Pictureid FROM Categories where name = '{chosencategory}')""")[1]
-        chosen_category_count = exec_return(f"SELECT COUNT(*) FROM Categories where name = '{chosencategory}'")[1][0][0]
+                                                WHERE Filename = Pictureid AND Pictureid IN\
+                                                (SELECT Pictureid FROM Categories WHERE Name = '{chosencategory}')""")[1]
+        chosen_category_count = exec_return(f"SELECT COUNT(*) FROM Categories WHERE Name = '{chosencategory}'")[1][0][0]
     return render_template('categories.html', categories=CATEGORIES, chosencategory=chosencategory,
                            chosencategorycount=chosen_category_count, photos=photos_from_category)
 
@@ -223,7 +223,23 @@ def mostactive():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    return render_template('mostactive.html')
+    # parameterben kapott felhasznalo
+    chosenuser = request.args.get('user')
+    chosen_user_count = 0
+    photos_from_user = []
+    # a 10 legtobb keppel rendelkezo felhasznalo
+    # a belso select lekeri az osszeset sorrendben, a kulso select limitalja az elso 8-ra
+    # azert nyolcra, mert kovetjuk a feng shuit. Na meg ennyi meg nem tulzottan hosszu lista
+    topusers = exec_return("""SELECT * FROM (\
+                                    SELECT Nick, COUNT(*) FROM Pictures, Users\
+                                    WHERE Author = Nick GROUP BY Nick ORDER BY COUNT(*) DESC, Nick\
+                                ) WHERE rownum <= 8""")[1]
+    if chosenuser is not None:
+        photos_from_user = exec_return(f"""SELECT Filename, Title, Description FROM Pictures\
+                                            WHERE Author = '{chosenuser}'""")[1]
+        chosen_user_count = exec_return(f"SELECT COUNT(*) FROM Pictures where Author = '{chosenuser}'")[1][0][0]
+    return render_template('mostactive.html', chosenuser=chosenuser, chosenusercount=chosen_user_count,
+                           topusers=topusers, photos=photos_from_user)
 
 
 # worldmap.html
