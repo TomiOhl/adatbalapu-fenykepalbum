@@ -67,6 +67,10 @@
                 {% for photo in photos %}
                     <div class="gallery">
                         <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
+                        <div class="desc">
+                            <b>{{ photo[1] }}</b><br>
+                            {{ photo[2] }}
+                        </div>
                     </div>
                 {% endfor %}
             {% endif %}

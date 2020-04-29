@@ -85,8 +85,6 @@ def profile():
     nick = session.get('nick')
     # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
-    # sajat kepek megjelenitese
-    own_pictures = exec_return(f"SELECT Filename, Title, Description FROM Pictures WHERE author = '{nick}'")[1]
     errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     # formok kezelese
     if request.method == 'POST':
@@ -132,6 +130,8 @@ def profile():
                                     FROM Users, Settlements, Countries\
                                     WHERE nick = '{nick}'\
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""")
+    # sajat kepek megjelenitese
+    own_pictures = exec_return(f"SELECT Filename, Title, Description FROM Pictures WHERE author = '{nick}'")[1]
 
     return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES,
                            own_pictures=own_pictures, errormsg=errormsg)
@@ -194,7 +194,6 @@ def get_images():
             # megegyező nevű képeket dictionarybe gyűjtük a {kép neve : leiras }
             image_names.update({image: images_database[1][i][1]})
             i += 1
-    print(image_names)
     return render_template("pictures.html", image_names=image_names)
 
 
@@ -210,7 +209,9 @@ def categories():
     photos_from_category = []
     chosen_category_count = 0
     if chosencategory is not None:
-        photos_from_category = exec_return(f"SELECT Pictureid FROM Categories where name = '{chosencategory}'")[1]
+        photos_from_category = exec_return(f"""SELECT Filename, Title, Description FROM Pictures, Categories\
+                                                WHERE filename = pictureid AND pictureid IN\
+                                                (SELECT Pictureid FROM Categories where name = '{chosencategory}')""")[1]
         chosen_category_count = exec_return(f"SELECT COUNT(*) FROM Categories where name = '{chosencategory}'")[1][0][0]
     return render_template('categories.html', categories=CATEGORIES, chosencategory=chosencategory,
                            chosencategorycount=chosen_category_count, photos=photos_from_category)
