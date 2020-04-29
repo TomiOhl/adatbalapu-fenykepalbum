@@ -46,3 +46,10 @@ CREATE TABLE Ratings (
     FOREIGN KEY (Picture) REFERENCES Pictures(Filename),
     FOREIGN KEY (Usernick) REFERENCES Users(Nick)
 );
+
+CREATE OR REPLACE TRIGGER delete_from_category
+AFTER DELETE ON Pictures
+FOR EACH ROW
+BEGIN
+    DELETE FROM Categories WHERE Pictureid = :OLD.Filename;
+END;

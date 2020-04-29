@@ -205,10 +205,12 @@ def categories():
     chosencategory = request.args.get('cat')
     # fajlnevek lekerese a kapott kategoriabol
     photos_from_category = []
+    chosen_category_count = 0
     if chosencategory is not None:
         photos_from_category = exec_return(f"SELECT Pictureid FROM Categories where name = '{chosencategory}'")[1]
+        chosen_category_count = exec_return(f"SELECT COUNT(*) FROM Categories where name = '{chosencategory}'")[1][0][0]
     return render_template('categories.html', categories=CATEGORIES, chosencategory=chosencategory,
-                           chosencategorycount=len(photos_from_category), photos=photos_from_category)
+                           chosencategorycount=chosen_category_count, photos=photos_from_category)
 
 
 # mostactive.html
