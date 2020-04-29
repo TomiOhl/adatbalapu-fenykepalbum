@@ -172,10 +172,21 @@ def upload(form_data, nick):
         errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
 
 
-# feltoltott kép jelenjen meg a pictures.html-ben
+# feltoltott kép jelenjen meg html-ben
 @app.route('/uploadpic/<filename>')
 def send_image(filename):
     return send_from_directory("uploads", filename)
+
+
+# torles gombra nyomva
+@app.route('/delete')
+def delete():
+    photo = request.args.get('photo')
+    source = request.args.get('from').strip()
+    exec_noreturn(f"DELETE FROM Pictures WHERE Filename = '{photo}'")
+    # torlodik a kep, a delete_from_category trigger torli a kategoriak tablabol is
+    # nem marad mas hatra, mint hogy reloadoljuk az oldalt, amin vagyunk
+    return redirect(source)
 
 
 # képeink oldal tartalma
@@ -227,7 +238,7 @@ def mostactive():
     chosenuser = request.args.get('user')
     chosen_user_count = 0
     photos_from_user = []
-    # a 10 legtobb keppel rendelkezo felhasznalo
+    # a 8 legtobb keppel rendelkezo felhasznalo
     # a belso select lekeri az osszeset sorrendben, a kulso select limitalja az elso 8-ra
     # azert nyolcra, mert kovetjuk a feng shuit. Na meg ennyi meg nem tulzottan hosszu lista
     topusers = exec_return("""SELECT * FROM (\

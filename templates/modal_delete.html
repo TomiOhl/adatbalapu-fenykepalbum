@@ -1,0 +1,31 @@
+{% block body %}
+
+    <div class="modal fade" id="modal-delete" role="dialog" aria-labelledby="modal-delete" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Biztosan törölni szeretné?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    A művelet nem vonható vissza. Járjon el körültekintően.
+                </div>
+                <div class="modal-footer">
+                    <a href="#" data-dismiss="modal" class="btn">Nem</a>
+                    <a class="btn confirm_delete">Igen</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //adatok atadasa a torles gombnak
+        $('#modal-delete').on('show.bs.modal', function (event) {
+            let adat = $(event.relatedTarget).data('val').split(",");
+            $(this).find(".confirm_delete").attr("href", "/delete?photo=" + adat[0] + "&from=" + adat[1]);
+        });
+    </script>
+
+{% endblock %}

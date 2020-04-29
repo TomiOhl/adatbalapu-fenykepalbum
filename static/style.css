@@ -272,3 +272,11 @@ div.desc {
 .capitalize {
     text-transform: capitalize;
 }
+
+.whitetext {
+    color: #ffffff;
+}
+
+.whitetext:hover {
+    color: ghostwhite;
+}

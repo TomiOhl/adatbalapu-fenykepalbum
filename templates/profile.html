@@ -113,7 +113,9 @@
                     <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
                     <div class="desc">
                         <b>{{ photo[1] }}</b><br>
-                        {{ photo[2] }}
+                        {{ photo[2] }}<br>
+                        <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-modify" data-val="">Módosítás</a>
+                        <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-delete" data-val="{{photo[0]}}, profile">Törlés</a>
                     </div>
                 </div>
             {% endfor %}
@@ -189,6 +191,9 @@
             $(this).find("#personalhidden").val(adat[4]);
         });
     </script>
+
+    <!--a torles felugro ablakot csak itt include-oljuk, amikor a jQuery mar bent van-->
+    {% include 'modal_delete.html' %}
 
     </body>
 </html>
