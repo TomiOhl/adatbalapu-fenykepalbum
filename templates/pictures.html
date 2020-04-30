@@ -65,7 +65,7 @@
                     <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=4) }}"></a>
                     <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=5) }}"></a>
                 </div>
-                <input type="text" style="display: none" id="ratingValue">
+                <input type="text" style="display: none" class="ratingValue">
             </div>
         {% endfor %}
         </section>
@@ -81,16 +81,13 @@
     <script>
             {#lekérjük a ratings értékeit vagyis a csillagokat#}
             let stars = document.querySelectorAll('.ratings .fa');
-            let ratingValue = document.querySelector("#ratingValue");
-            let index;
+            let ratingValue = document.querySelector(".ratingValue");
+            let index, currentStars;
             for (let i = 0; i < stars.length; i++) {
                 <!-- Ha az egeret rávisszük akk jelölje ki a csillagokat-->
                 stars[i].addEventListener("mouseover", function () {
-                    for (let j = 0; j < stars.length; j++) {
-                        stars[j].classList.remove("fa-star");
-                        stars[j].classList.add("fa-star-o");
-                    }
-                    for (let j = 0; j <= i; j++) {
+                    currentStars = i % 5;
+                    for (let j = i-currentStars; j <= i; j++) {
                         stars[j].classList.remove("fa-star-o");
                         stars[j].classList.add("fa-star");
                     }
@@ -98,7 +95,6 @@
                 stars[i].addEventListener("click", function () {
                     ratingValue.value = i + 1;
                     index = i;
-
                 })
                 // ha kikattintunk akkor is maradjanak meg a pontozott részek
                 stars[i].addEventListener("mouseout", function () {
@@ -106,7 +102,7 @@
                         stars[j].classList.remove("fa-star");
                         stars[j].classList.add("fa-star-o");
                     }
-                    for (let j = 0; j <= index; j++) {
+                    for (let j = index-currentStars; j <= index; j++) {
                         stars[j].classList.remove("fa-star-o");
                         stars[j].classList.add("fa-star");
                     }
