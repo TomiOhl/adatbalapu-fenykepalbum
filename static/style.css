@@ -280,3 +280,9 @@ div.desc {
 .whitetext:hover {
     color: ghostwhite;
 }
+
+.gallery .ratings .fa{
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+}

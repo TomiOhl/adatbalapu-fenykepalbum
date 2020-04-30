@@ -57,6 +57,14 @@
             <div class="gallery">
                 <img class="image" src=" {{url_for('send_image', filename=image_name)}}">
                 <div class="desc">{{ description }}</div>
+                <div class="ratings">
+                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=1) }}"></a>
+                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=2) }}"></a>
+                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=3) }}"></a>
+                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=4) }}"></a>
+                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=5) }}"></a>
+                </div>
+                <input type="text" style="display: none" id="ratingValue">
             </div>
         {% endfor %}
         </section>
@@ -76,5 +84,41 @@
             });
         </script>
     {% endif %}
+    <!-- Értékelés csillagokkal-->
+    <script>
+            {#lekérjük a ratings értékeit vagyis a csillagokat#}
+            let stars = document.querySelector('.ratings').children;
+            let ratingValue = document.querySelector("#ratingValue");
+            let index;
+            for (let i = 0; i < stars.length; i++) {
+                <!-- Ha az egeret rávisszük akk jelölje ki a csillagokat-->
+                stars[i].addEventListener("mouseover", function () {
+                    for (let j = 0; j < stars.length; j++) {
+                        stars[j].classList.remove("fa-star");
+                        stars[j].classList.add("fa-star-o");
+                    }
+                    for (let j = 0; j <= i; j++) {
+                        stars[j].classList.remove("fa-star-o");
+                        stars[j].classList.add("fa-star");
+                    }
+                });
+                stars[i].addEventListener("click", function () {
+                    ratingValue.value = i + 1;
+                    index = i;
+
+                })
+                // ha kikattintunk akkor is maradjanak meg a pontozott részek
+                stars[i].addEventListener("mouseout", function () {
+                    for (let j = 0; j < stars.length; j++) {
+                        stars[j].classList.remove("fa-star");
+                        stars[j].classList.add("fa-star-o");
+                    }
+                    for (let j = 0; j <= index; j++) {
+                        stars[j].classList.remove("fa-star-o");
+                        stars[j].classList.add("fa-star");
+                    }
+                })
+            }
+    </script>
     </body>
 </html>
