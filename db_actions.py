@@ -7,14 +7,16 @@ def connect():
     return con
 
 
-def exec_return(query):  # ahol visszater valamivel, pl SELECT
+def exec_return(query, params=None):  # ahol visszater valamivel, pl SELECT
+    if params is None:
+        params = []
     colnames = []
     out = []
     try:
         with connect() as connection:
             # itt kellenek a db-műveletek
             with connection.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, params)
                 colnames = [desc[0] for desc in cursor.description]
                 for result in cursor:
                     out.append(result)
@@ -23,11 +25,13 @@ def exec_return(query):  # ahol visszater valamivel, pl SELECT
     return colnames, out
 
 
-def exec_noreturn(query):   # ahol nem ter vissza (pl INSERT)
+def exec_noreturn(query, params=None):   # ahol nem ter vissza (pl INSERT)
+    if params is None:
+        params = []
     try:
         with connect() as connection:
             with connection.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, params)
                 connection.commit()
     except cx_Oracle.Error as error:
         print(error)

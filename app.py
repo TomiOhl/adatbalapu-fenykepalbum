@@ -30,7 +30,8 @@ def index():
             # juzer bejelentkeztetese
             login_email = form_data.get('loginemail')
             login_password = form_data.get('loginpassword')
-            check_user = exec_return(f"SELECT email, password, nick FROM Users WHERE email = '{login_email}'")
+            check_user = exec_return(
+                "SELECT email, password, nick FROM Users WHERE email = :login_email", [login_email])
             if check_user[1]:  # True, ha letezik a felhasznalo
                 if check_user[1][0][1] == login_password:  # mert egy kételemű lista egyetlen elemének második eleme...
                     session['nick'] = check_user[1][0][2]
@@ -57,7 +58,7 @@ def index():
             if password != passwordagain:
                 flash("A két jelszó nem egyezik. ")
                 correct = False
-            check_nick = exec_return(f"SELECT nick FROM Users WHERE nick = '{nick}'")
+            check_nick = exec_return("SELECT nick FROM Users WHERE nick = :nick", [nick])
             if check_nick[1]:  # True, ha nem ures
                 flash("A beírt nicknév már foglalt. ")
                 correct = False
@@ -66,8 +67,9 @@ def index():
                 correct = False
             # juzer elmentese
             if correct:
-                exec_noreturn(
-                    f"INSERT INTO Users VALUES('{nick}', '{email}', '{password}', '{fullname}', {location}, TO_DATE('{birthdate}', 'YYYY-MM-DD'))")
+                exec_noreturn("""INSERT INTO Users\
+                            VALUES(:nick, :email, :password, :fullname, :location, TO_DATE(:birthdate, 'YYYY-MM-DD'))\
+                                """, [nick, email, password, fullname, location, birthdate])
                 session['nick'] = nick
                 session.permanent = True
                 return redirect(url_for('profile'))
@@ -105,31 +107,32 @@ def profile():
                     flash("A két jelszó nem egyezik. ")
                     correct = False
             else:
-                passwordquery = exec_return(f"SELECT password FROM Users WHERE nick = '{nick}'")
+                passwordquery = exec_return("SELECT password FROM Users WHERE nick = :nick", [nick])
                 password = passwordquery[1][0][0]
             # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
             if ':' in location:
                 locationname = location.split(":")[1].strip()
-                locationquery = exec_return(f"SELECT Id FROM Settlements WHERE name = '{locationname}'")
+                locationquery = exec_return("SELECT Id FROM Settlements WHERE name = :locationname", [locationname])
                 location = locationquery[1][0][0]
             # mentsuk el a modositott adatokat
             if correct:
-                exec_noreturn(f"""UPDATE Users\
-                                    SET email = '{email}', password = '{password}', fullname = '{fullname}',\
-                                    location = {location}, birthdate = TO_DATE('{birthdate}', 'YYYY-MM-DD')\
-                                    WHERE nick = '{nick}'""")
+                exec_noreturn("""UPDATE Users\
+                                    SET email = :email, password = :password, fullname = :fullname,\
+                                    location = :location, birthdate = TO_DATE(:birthdate, 'YYYY-MM-DD')\
+                                    WHERE nick = :nick""", [email, password, fullname, location, birthdate, nick])
 
         # fájlfeltöltés
         elif 'uploadpic' in request.files:
             upload(form_data, nick)
 
     # szemelyes adatok lekerese
-    personaldata = exec_return(f"""SELECT nick, email, password, fullname, Settlements.name, Countries.name, birthdate\
+    personaldata = exec_return("""SELECT nick, email, password, fullname, Settlements.name, Countries.name, birthdate\
                                     FROM Users, Settlements, Countries\
-                                    WHERE nick = '{nick}'\
-                                    and Users.location = Settlements.Id and Settlements.country = Countries.Id""")
+                                    WHERE nick = :nick\
+                                    and Users.location = Settlements.Id and Settlements.country = Countries.Id""",
+                               [nick])
     # sajat kepek megjelenitese
-    own_pictures = exec_return(f"SELECT Filename, Title, Description FROM Pictures WHERE author = '{nick}'")[1]
+    own_pictures = exec_return("SELECT Filename, Title, Description FROM Pictures WHERE author = :nick", [nick])[1]
 
     return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES,
                            own_pictures=own_pictures)
@@ -156,15 +159,16 @@ def upload(form_data, nick):
         # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
         if ':' in location:
             locationname = location.split(":")[1].strip()
-            locationquery = exec_return(f"SELECT Id FROM Settlements WHERE name = '{locationname}'")
+            locationquery = exec_return("SELECT Id FROM Settlements WHERE name = :locationname", [locationname])
             location = locationquery[1][0][0]
         # uploads folderbe mentése a kepnek
         if correct:
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             # kep feltoltese az adatbazisba, kategoria megadasa
             exec_noreturn(
-                f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', '{location}' )")
-            exec_noreturn(f"INSERT INTO Categories VALUES ('{category}', '{filename}')")
+                "INSERT INTO Pictures VALUES (:filename, :nick, :title, :description, :location)",
+                [filename, nick, title, description, location])
+            exec_noreturn("INSERT INTO Categories VALUES (:category, :filename)", [category, filename])
     else:
         flash("Az érvényes fájltípusok: png, jpg, jpeg, gif. ")
 
@@ -180,7 +184,7 @@ def send_image(filename):
 def delete():
     photo = request.args.get('photo')
     source = request.args.get('from').strip()
-    exec_noreturn(f"DELETE FROM Pictures WHERE Filename = '{photo}'")
+    exec_noreturn("DELETE FROM Pictures WHERE Filename = :photo", [photo])
     # torlodik a kep, a delete_from_category trigger torli a kategoriak tablabol is
     # nem marad mas hatra, mint hogy reloadoljuk az oldalt, amin vagyunk
     return redirect(source)
@@ -189,13 +193,12 @@ def delete():
 # képeink oldal tartalma
 @app.route('/pictures')
 def get_images():
-    author = session.get('nick')
     image_names = dict()
     i = 0
     # az uploads-ban lévő képek kilistázása
     images_dir = os.listdir(app.config['UPLOAD_FOLDER'])
     # az adatbázisban lévő képek kilistázása filename szerint rendezve, ha már később a mappát járjuk be
-    images_database = exec_return(f"SELECT Filename, Description FROM Pictures ORDER BY Filename")
+    images_database = exec_return("SELECT Filename, Description FROM Pictures ORDER BY Filename")
     for image in images_dir:
         # mivel tuple-t ad vissza az adatbazis ezert a másodikban lévő lista fájlneveit át kell alakítani str-é
         if image in (str(images_database[1])):
@@ -217,10 +220,12 @@ def categories():
     photos_from_category = []
     chosen_category_count = 0
     if chosencategory is not None:
-        photos_from_category = exec_return(f"""SELECT Filename, Title, Description FROM Pictures, Categories\
+        photos_from_category = exec_return("""SELECT Filename, Title, Description FROM Pictures, Categories\
                                                 WHERE Filename = Pictureid AND Pictureid IN\
-                                                (SELECT Pictureid FROM Categories WHERE Name = '{chosencategory}')""")[1]
-        chosen_category_count = exec_return(f"SELECT COUNT(*) FROM Categories WHERE Name = '{chosencategory}'")[1][0][0]
+                                                (SELECT Pictureid FROM Categories WHERE Name = :chosencategory)""",
+                                           [chosencategory])[1]
+        chosen_category_count = exec_return("SELECT COUNT(*) FROM Categories WHERE Name = :chosencategory",
+                                            [chosencategory])[1][0][0]
     return render_template('categories.html', categories=CATEGORIES, chosencategory=chosencategory,
                            chosencategorycount=chosen_category_count, photos=photos_from_category)
 
@@ -243,9 +248,10 @@ def mostactive():
                                     WHERE Author = Nick GROUP BY Nick ORDER BY COUNT(*) DESC, Nick\
                                 ) WHERE rownum <= 8""")[1]
     if chosenuser is not None:
-        photos_from_user = exec_return(f"""SELECT Filename, Title, Description FROM Pictures\
-                                            WHERE Author = '{chosenuser}'""")[1]
-        chosen_user_count = exec_return(f"SELECT COUNT(*) FROM Pictures where Author = '{chosenuser}'")[1][0][0]
+        photos_from_user = exec_return("""SELECT Filename, Title, Description FROM Pictures\
+                                            WHERE Author = :chosenuser""", [chosenuser])[1]
+        chosen_user_count = exec_return("SELECT COUNT(*) FROM Pictures where Author = :chosenuser",
+                                        [chosenuser])[1][0][0]
     return render_template('mostactive.html', chosenuser=chosenuser, chosenusercount=chosen_user_count,
                            topusers=topusers, photos=photos_from_user)
 
@@ -258,8 +264,8 @@ def worldmap():
         return redirect(url_for('index'))
     # lenyilo listahoz telepulesek listaja
     settlements_query = exec_return("""SELECT Settlements.Id, Settlements.Name, Countries.Name\
-                                        FROM Settlements, Countries\
-                                        WHERE Settlements.Country = Countries.Id ORDER BY Country, Settlements.Name""")[1]
+                                    FROM Settlements, Countries\
+                                    WHERE Settlements.Country = Countries.Id ORDER BY Country, Settlements.Name""")[1]
     # atcsinaljuk ugy, hogy az orszagok is kapjanak opciot, elvalasztaskent
     settlements = []
     curr_country = ""
@@ -273,13 +279,15 @@ def worldmap():
     photos_from_place = []
     settlement_faces = []
     if chosensettlement is not None:
-        photos_from_place = exec_return(f"""SELECT Filename, Title, Description FROM Pictures\
-                                            WHERE Location = '{chosensettlement}'""")[1]
+        photos_from_place = exec_return("""SELECT Filename, Title, Description FROM Pictures\
+                                            WHERE Location = :chosensettlement""", [chosensettlement])[1]
         # varosok arcai feature
-        settlement_faces = exec_return(f"""SELECT Author, COUNT(*) FROM Pictures\
-                                            WHERE Location = {chosensettlement} GROUP BY Author ORDER BY COUNT(*)""")[1]
+        settlement_faces = exec_return("""SELECT Author, COUNT(*) FROM Pictures\
+                                            WHERE Location = :chosensettlement GROUP BY Author ORDER BY COUNT(*)""",
+                                       [chosensettlement])[1]
         # mostmar a neve kell a telepulesnek az id helyett
-        chosensettlement = exec_return(f"SELECT Name FROM Settlements WHERE Id = '{chosensettlement}'")[1][0][0]
+        chosensettlement = exec_return("SELECT Name FROM Settlements WHERE Id = :chosensettlement",
+                                       [chosensettlement])[1][0][0]
     return render_template('worldmap.html', settlements=settlements, chosensettlement=chosensettlement,
                            photos=photos_from_place, settlement_faces=settlement_faces)
 
