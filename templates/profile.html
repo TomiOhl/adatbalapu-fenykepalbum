@@ -113,7 +113,9 @@
                     <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
                     <div class="desc">
                         <b>{{ photo[1] }}</b><br>
+                        {% if photo[2] is not none %}
                         {{ photo[2] }}<br>
+                        {% endif %}
                         <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-modify" data-val="">Módosítás</a>
                         <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-delete" data-val="{{photo[0]}}, profile">Törlés</a>
                     </div>

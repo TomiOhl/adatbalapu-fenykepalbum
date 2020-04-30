@@ -57,7 +57,9 @@
         {% for image_name, description in image_names.items() %}
             <div class="gallery">
                 <img class="image" src=" {{url_for('send_image', filename=image_name)}}">
+                {% if description is not none %}
                 <div class="desc">{{ description }}</div>
+                {% endif %}
                 <div class="ratings">
                     <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=1) }}"></a>
                     <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=2) }}"></a>
