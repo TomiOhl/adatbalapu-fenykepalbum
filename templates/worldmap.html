@@ -54,7 +54,48 @@
 
         <section>
 
+            <select name="settlement" class="worldmap-select" onchange ="if (this.value)window.location.href=this.value">
+                <option selected hidden value="">Település</option>
+                {% for s in settlements %}
+                    <option value="worldmap?place={{s[0]}}">{{s[1]}}</option>
+                {% endfor %}
+            </select>
+            <br>
 
+            <!--a kivalasztott hely neve, kepei-->
+            {% if chosensettlement is not none %}
+                <h3 class="capitalize">{{ chosensettlement }}</h3>
+                <div>({{ photos|length }} kép)</div>
+
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-sm-9 col-xs-12">
+                            {% for photo in photos %}
+                                <div class="gallery">
+                                    <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
+                                    <div class="desc">
+                                        <b>{{ photo[1] }}</b><br>
+                                        {{ photo[2] }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!--varosok arcai feature-->
+                        <div class="col-sm-3 col-xs-12">
+                            <div class="personal-card">
+                                <ul>
+                                {% for user in settlement_faces %}
+                                    <li>{{ user[0] }}: {{ user[1] }} kép</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endif %}
 
         </section>
 
@@ -67,6 +108,10 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
+    <script>
+        //tiltsuk le azokat a select opciokat, amik orszagnevek
+        $('.worldmap-select').children('option[value="worldmap?place=x"]').attr('disabled', true)
+                                                                            .css({"color":"#0266c8", "font-weight":"bold"});
+    </script>
     </body>
 </html>

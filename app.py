@@ -259,7 +259,32 @@ def worldmap():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    return render_template('worldmap.html')
+    # lenyilo listahoz telepulesek listaja
+    settlements_query = exec_return("""SELECT Settlements.Id, Settlements.Name, Countries.Name\
+                                        FROM Settlements, Countries\
+                                        WHERE Settlements.Country = Countries.Id ORDER BY Country, Settlements.Name""")[1]
+    # atcsinaljuk ugy, hogy az orszagok is kapjanak opciot, elvalasztaskent
+    settlements = []
+    curr_country = ""
+    for item in settlements_query:
+        if item[2] != curr_country:
+            curr_country = item[2]
+            settlements.append(tuple(["x", f"*****{curr_country}*****"]))
+        settlements.append(tuple([item[0], item[1]]))
+    # ha mar valasztottunk telepulest, jelenitsuk meg a kepeket
+    chosensettlement = request.args.get('place')
+    photos_from_place = []
+    settlement_faces = []
+    if chosensettlement is not None:
+        photos_from_place = exec_return(f"""SELECT Filename, Title, Description FROM Pictures\
+                                            WHERE Location = '{chosensettlement}'""")[1]
+        # varosok arcai feature
+        settlement_faces = exec_return(f"""SELECT Author, COUNT(*) FROM Pictures\
+                                            WHERE Location = {chosensettlement} GROUP BY Author ORDER BY COUNT(*)""")[1]
+        # mostmar a neve kell a telepulesnek az id helyett
+        chosensettlement = exec_return(f"SELECT Name FROM Settlements WHERE Id = '{chosensettlement}'")[1][0][0]
+    return render_template('worldmap.html', settlements=settlements, chosensettlement=chosensettlement,
+                           photos=photos_from_place, settlement_faces=settlement_faces)
 
 
 # logout process
