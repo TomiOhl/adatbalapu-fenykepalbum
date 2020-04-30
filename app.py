@@ -189,6 +189,7 @@ def delete():
     # nem marad mas hatra, mint hogy reloadoljuk az oldalt, amin vagyunk
     return redirect(source)
 
+
 @app.route('/pictures/<filename>/<score>')
 def send_rating(filename, score):
     author = session.get('nick')
@@ -196,6 +197,7 @@ def send_rating(filename, score):
     exec_noreturn(f"UPDATE Ratings SET Stars='{score}' WHERE Picture='{filename}' AND Usernick='{author}' ")
     exec_noreturn(f"INSERT INTO Ratings VALUES ('{score}', '{filename}', '{author}')")
     return redirect(url_for('pictures'))
+
 
 # képeink oldal tartalma
 @app.route('/pictures')
@@ -297,6 +299,7 @@ def worldmap():
                                        [chosensettlement])[1][0][0]
     return render_template('worldmap.html', settlements=settlements, chosensettlement=chosensettlement,
                            photos=photos_from_place, settlement_faces=settlement_faces)
+
 
 # logout process
 @app.route('/logout')
