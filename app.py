@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, url_for, redirect, session, send_from_directory
+from flask import Flask, render_template, request, url_for, redirect, session, send_from_directory, flash
 from werkzeug.utils import secure_filename
 
 from db_actions import exec_return, exec_noreturn
@@ -23,7 +23,6 @@ def index():
         return redirect(url_for('profile'))
     # regisztracio lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
-    errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     # formok kezelese
     if request.method == 'POST':
         form_data = request.form  # bekerjuk a form adatait
@@ -38,9 +37,9 @@ def index():
                     session.permanent = True
                     return redirect(url_for('profile'))
                 else:
-                    errormsg = "A megadott jelszó hibás."
+                    flash("A megadott jelszó hibás.")
             else:
-                errormsg = "A megadott e-mail helytelen."
+                flash("A megadott e-mail helytelen.")
         elif 'signup' in form_data:
             # adatok valtozokba
             email = form_data.get('email')
@@ -53,17 +52,17 @@ def index():
             # olyan validacio, amire a html nem volt eleg (jelszo es nick egyedisege)
             correct = True
             if len(password) < 8:
-                errormsg += "A jelszónak legalább 8 karakter hosszúnak kell lennie. "
+                flash("A jelszónak legalább 8 karakter hosszúnak kell lennie. ")
                 correct = False
             if password != passwordagain:
-                errormsg += "A két jelszó nem egyezik. "
+                flash("A két jelszó nem egyezik. ")
                 correct = False
             check_nick = exec_return(f"SELECT nick FROM Users WHERE nick = '{nick}'")
             if check_nick[1]:  # True, ha nem ures
-                errormsg += "A beírt nicknév már foglalt. "
+                flash("A beírt nicknév már foglalt. ")
                 correct = False
             if len(location) < 1:
-                errormsg += "Adja meg a települést, ahonnan származik. "
+                flash("Adja meg a települést, ahonnan származik. ")
                 correct = False
             # juzer elmentese
             if correct:
@@ -72,7 +71,7 @@ def index():
                 session['nick'] = nick
                 session.permanent = True
                 return redirect(url_for('profile'))
-    return render_template('index.html', settlements=settlements, errormsg=errormsg)
+    return render_template('index.html', settlements=settlements)
 
 
 # profile.html
@@ -85,7 +84,6 @@ def profile():
     nick = session.get('nick')
     # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
     settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
-    errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     # formok kezelese
     if request.method == 'POST':
         form_data = request.form  # bekerjuk a formok adatait
@@ -101,10 +99,10 @@ def profile():
             correct = True
             if len(password.strip()) != 0:
                 if len(password) < 8:
-                    errormsg += "A jelszónak legalább 8 karakter hosszúnak kell lennie. "
+                    flash("A jelszónak legalább 8 karakter hosszúnak kell lennie. ")
                     correct = False
                 if password != passwordagain:
-                    errormsg += "A két jelszó nem egyezik. "
+                    flash("A két jelszó nem egyezik. ")
                     correct = False
             else:
                 passwordquery = exec_return(f"SELECT password FROM Users WHERE nick = '{nick}'")
@@ -134,17 +132,16 @@ def profile():
     own_pictures = exec_return(f"SELECT Filename, Title, Description FROM Pictures WHERE author = '{nick}'")[1]
 
     return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES,
-                           own_pictures=own_pictures, errormsg=errormsg)
+                           own_pictures=own_pictures)
 
 
 @app.route('/uploadpic', methods=['POST'])
 def upload(form_data, nick):
-    errormsg = ""  # inicializaljuk. Ennek erteket fogjuk alertben megjeleniteni, ha hiba adodik
     file = request.files['uploadpic']
     extension = file.filename.rsplit('.', 1)[1]
     correct = True
     if file.filename == '':
-        errormsg += "Nincs kiválasztott kép. "
+        flash("Nincs kiválasztott kép. ")
         correct = False
     if file and '.' in file.filename and extension.lower() in ALLOWED_EXTENSIONS:
         # adatok lementese valtozokba
@@ -154,7 +151,7 @@ def upload(form_data, nick):
         category = form_data.get('category')
         description = form_data.get('description')
         if len(description) > 150:
-            errormsg += "A leiras maximum 150 karakter hosszú lehet. "
+            flash("A leiras maximum 150 karakter hosszú lehet. ")
             correct = False
         # ha a selecten nem valasztott a juzer mas lokaciot, akkor annak feliratabol kell decryptelni
         if ':' in location:
@@ -169,7 +166,7 @@ def upload(form_data, nick):
                 f"INSERT INTO Pictures VALUES ('{filename}', '{nick}', '{title}', '{description}', '{location}' )")
             exec_noreturn(f"INSERT INTO Categories VALUES ('{category}', '{filename}')")
     else:
-        errormsg += "Az érvényes fájltípusok: png, jpg, jpeg, gif. "
+        flash("Az érvényes fájltípusok: png, jpg, jpeg, gif. ")
 
 
 # feltoltott kép jelenjen meg html-ben
