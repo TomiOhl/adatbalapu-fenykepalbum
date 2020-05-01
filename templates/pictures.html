@@ -70,7 +70,11 @@
                 <input type="text" style="display: none" class="ratingValue">
                 {% for kep, atlag in atlagok.items() %}
                     {% if kep == image_name %}
-                        <span>{{ atlag }}</span>
+                        {% if atlag != "None" %}
+                            <span>Értékelés: {{ atlag }}*</span>
+                        {% else %}
+                            <span>Még nem volt értékelve</span>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>
