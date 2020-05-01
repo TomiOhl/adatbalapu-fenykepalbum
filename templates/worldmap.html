@@ -5,6 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}"/>
     </head>
     <body>
@@ -84,6 +85,14 @@
                                         {{ photo[2] }}
                                         {% endif %}
                                     </div>
+                                    <div class="ratings">
+                                        <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='worldmap', filename=photo[0], score=1) }}"></a>
+                                        <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='worldmap', filename=photo[0], score=2) }}"></a>
+                                        <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='worldmap', filename=photo[0], score=3) }}"></a>
+                                        <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='worldmap', filename=photo[0], score=4) }}"></a>
+                                        <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='worldmap', filename=photo[0], score=5) }}"></a>
+                                    </div>
+                                    <input type="text" style="display: none" class="ratingValue">
                                 </div>
                             {% endfor %}
                         {% endif %}
@@ -136,5 +145,7 @@
         $('.worldmap-select').children('option[value="worldmap?place=x"]').attr('disabled', true)
                                                                             .css({"color":"#0266c8", "font-weight":"bold"});
     </script>
+    <!-- Értékelés csillagokkal-->
+    <script src="../static/stars.js"></script>
     </body>
 </html>
