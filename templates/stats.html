@@ -32,7 +32,7 @@
                         <a class="nav-link" href="worldmap">Világatlasz</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="profile" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle activetab" href="profile" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {{ session.get('nick') }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -49,12 +49,26 @@
 
             <div class="description">
                 <h1>Feltöltési statisztikák</h1>
-                <p>Néhány érdekes, vagy éppen kevésbé érdekes statisztika.</p>
+                <p>
+                    Néhány érdekes, vagy éppen kevésbé érdekes statisztika.<br>
+                    <small>Fontosnak fontosak, mert tárolt PL/SQL függvényekkel vannak megvalósítva.</small>
+                </p>
             </div>
 
         </header>
 
         <section>
+
+            <div class="personal-card">
+                Kérdés: "Az összes kép hány százalékát töltöttem fel én?"<br>
+                Válasz: <b>{{ photos_share }}%</b>-át.<br><br>
+                Kérdés: "Hány százalékban maradok otthon, ha fényképezésről van szó?"<br>
+                Válasz: a képek <b>{{ photos_at_home }}%</b>-a a szülővárosomban készült.<br><br>
+                Kérdés: "Átlagban mennyire tetszenek nekem a többiek képei, hány csillagot adok?"<br>
+                Válasz: átlagban <b>{{ given_ratings_avg }} csillag</b>ot adok egy képre.<br><br>
+                Kérdés: "Átlagban mennyire tetszenek másoknak az én képeim, hány csillagot kapok?"<br>
+                Válasz: átlagban <b>{{ received_ratings_avg }} csillag</b>ot kapok egy képre.
+            </div>
 
         </section>
     </div>

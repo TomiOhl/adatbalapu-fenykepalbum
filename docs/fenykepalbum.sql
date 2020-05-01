@@ -81,7 +81,7 @@ RETURN FLOAT IS
 BEGIN
     SELECT COUNT(*) INTO kepekszama FROM Pictures;
     SELECT COUNT(*) INTO userkepei FROM Pictures WHERE Author = user;
-    szazalek := kepekszama / userkepei;
+    szazalek := (userkepei / kepekszama) * 100;
     RETURN (szazalek);
 END photos_share;
 
@@ -97,7 +97,7 @@ BEGIN
     SELECT Location INTO userlocation FROM Users WHERE Nick = user;
     SELECT COUNT(*) INTO kepekszama FROM Pictures;
     SELECT COUNT(*) INTO otthonikepek FROM Pictures, Users WHERE Author = user AND Pictures.Location = userlocation AND Pictures.Location = Users.Location;
-    szazalek := kepekszama / otthonikepek;
+    szazalek := (otthonikepek / kepekszama) * 100;
     RETURN (szazalek);
 END photos_at_home;
 
@@ -117,7 +117,7 @@ CREATE OR REPLACE FUNCTION received_ratings_avg(user IN VARCHAR2)
 RETURN FLOAT IS
     szazalek FLOAT(7);
 BEGIN
-    SELECT AVG(Stars) INTO szazalek FROM Ratings WHERE Picture = (SELECT Filename FROM Pictures WHERE Pictures.Author = user);
+    SELECT AVG(Stars) INTO szazalek FROM Ratings WHERE Picture IN (SELECT Filename FROM Pictures WHERE Pictures.Author = user);
     RETURN (szazalek);
 END received_ratings_avg;
 

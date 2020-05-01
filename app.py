@@ -365,11 +365,17 @@ def stats():
     if 'nick' not in session:
         return redirect(url_for('index'))
     user = session.get('nick')
-    # tarolt fgv-k mint: hany kep van feltoltve, ennek hany szazaleka a bejelentkezett usertol: photos_share
-    # print(exec_function('photos_share', float, user))
+    # PL/SQL tarolt fuggvenyek
+    # a feltoltott kepek hany szazaleka a bejelentkezett usertol: photos_share
+    photos_share = exec_function('photos_share', float, user)
     # kepek hany szazalekat toltotte fol a user a szulovarosaban: photos_at_home
-    # atlagban milyen ratinget ad (given_ratings_avg), milyet kap (received_ratings_avg)
-    return render_template('stats.html')
+    photos_at_home = exec_function('photos_at_home', float, user)
+    # atlagban milyen ratinget ad a user (given_ratings_avg)
+    given_ratings_avg = exec_function('given_ratings_avg', float, user)
+    # atlagban milyen ratinget kap a user (received_ratings_avg)
+    received_ratings_avg = exec_function('received_ratings_avg', float, user)
+    return render_template('stats.html', photos_share=photos_share, photos_at_home=photos_at_home,
+                           given_ratings_avg=given_ratings_avg, received_ratings_avg=received_ratings_avg)
 
 
 # logout process
