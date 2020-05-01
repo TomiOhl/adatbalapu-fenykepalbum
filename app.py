@@ -226,15 +226,19 @@ def delete():
     return redirect(source)
 
 
-@app.route('/pictures/<filename>/<score>')
+@app.route('/rate/<filename>/<score>')
 def send_rating(filename, score):
-    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
-    if 'nick' not in session:
-        return redirect(url_for('index'))
     author = session.get('nick')
-    # if exec_noreturn(f"SELECT * FROM Ratings WHERE EXISTS (SELECT * FROM Ratings WHERE Picture='{filename}' AND Usernick='{author}')"):
-    exec_noreturn(f"UPDATE Ratings SET Stars='{score}' WHERE Picture='{filename}' AND Usernick='{author}' ")
-    exec_noreturn(f"INSERT INTO Ratings VALUES ('{score}', '{filename}', '{author}')")
+    # rate-el ellenőrizzük, hogy az értékelésünkkel ne vegezzünk felesleges Update-lést
+    rate = exec_return(f"SELECT Stars FROM Ratings WHERE Picture=:picture AND Usernick=:author", [filename, author])
+    if len(rate[1]) == 0:
+        # kep ertekeles feltoltese adatbazisba ha még nincsen
+        exec_noreturn(f"INSERT INTO Ratings VALUES (:star, :picture, :author)", [score, filename, author])
+    elif rate[1][0][0] == score:
+        pass
+    else:
+        exec_noreturn(f"UPDATE Ratings SET Stars=:star WHERE Picture=:picture AND Usernick=:author ",
+                      [score, filename, author])
     return redirect(url_for('pictures'))
 
 
@@ -245,6 +249,7 @@ def get_images():
     if 'nick' not in session:
         return redirect(url_for('index'))
     image_names = dict()
+    atlagok = dict()
     i = 0
     # az uploads-ban lévő képek kilistázása
     images_dir = os.listdir(app.config['UPLOAD_FOLDER'])
@@ -255,8 +260,15 @@ def get_images():
         if image in (str(images_database[1])):
             # megegyező nevű képeket dictionarybe gyűjtük a {kép neve : leiras }
             image_names.update({image: images_database[1][i][1]})
+            atlagok.update({image: avgRate(str(image))})
             i += 1
-    return render_template("pictures.html", image_names=image_names, send_rating=send_rating)
+    return render_template("pictures.html", image_names=image_names, atlagok=atlagok)
+
+
+@app.route('/pictures/<filename>')
+def avgRate(filename):
+    atlagok = exec_return(f"select AVG(stars) from Ratings where picture=:pic", [filename])
+    return str(atlagok[1][0][0])
 
 
 # categories.html
