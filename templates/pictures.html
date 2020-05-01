@@ -54,22 +54,25 @@
         </header>
 
         <section>
-        {% for image_name, description in image_names.items() %}
+        {% for image_name in image_names %}
             <div class="gallery">
-                <img class="image" src=" {{url_for('send_image', filename=image_name)}}">
-                {% if description is not none %}
-                <div class="desc">{{ description }}</div>
-                {% endif %}
-                <div class="ratings">
-                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=1) }}"></a>
-                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=2) }}"></a>
-                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=3) }}"></a>
-                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=4) }}"></a>
-                    <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=5) }}"></a>
-                </div>
+                <img class="image" src=" {{url_for('send_image', filename=image_name[0])}}">
+                <div class="desc">
+                        <b>{{ image_name[1] }}</b><br>
+                        {% if image_name[2] is not none %}
+                        {{ image_name[2] }}<br>
+                        {% endif %}
+                        <div class="ratings">
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=1) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=2) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=3) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=4) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=5) }}"></a>
+                        </div>
+
                 <input type="text" style="display: none" class="ratingValue">
                 {% for kep, atlag in atlagok.items() %}
-                    {% if kep == image_name %}
+                    {% if kep == image_name[0] %}
                         {% if atlag != "None" %}
                             <span>Értékelés: {{ atlag }}*</span>
                         {% else %}
@@ -77,6 +80,7 @@
                         {% endif %}
                     {% endif %}
                 {% endfor %}
+                </div>
             </div>
         {% endfor %}
         </section>

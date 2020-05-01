@@ -229,14 +229,14 @@ def delete():
 def send_rating(filename, score):
     author = session.get('nick')
     # rate-el ellenőrizzük, hogy az értékelésünkkel ne vegezzünk felesleges Update-lést
-    rate = exec_return(f"SELECT Stars FROM Ratings WHERE Picture=:picture AND Usernick=:author", [filename, author])
+    rate = exec_return("SELECT Stars FROM Ratings WHERE Picture=:picture AND Usernick=:author", [filename, author])
     if len(rate[1]) == 0:
         # kep ertekeles feltoltese adatbazisba ha még nincsen
-        exec_noreturn(f"INSERT INTO Ratings VALUES (:star, :picture, :author)", [score, filename, author])
+        exec_noreturn("INSERT INTO Ratings VALUES (:star, :picture, :author)", [score, filename, author])
     elif rate[1][0][0] == score:
         pass
     else:
-        exec_noreturn(f"UPDATE Ratings SET Stars=:star WHERE Picture=:picture AND Usernick=:author ",
+        exec_noreturn("UPDATE Ratings SET Stars=:star WHERE Picture=:picture AND Usernick=:author ",
                       [score, filename, author])
     return redirect(url_for('pictures'))
 
@@ -247,26 +247,17 @@ def get_images():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    image_names = dict()
     atlagok = dict()
-    i = 0
-    # az uploads-ban lévő képek kilistázása
-    images_dir = os.listdir(app.config['UPLOAD_FOLDER'])
-    # az adatbázisban lévő képek kilistázása filename szerint rendezve, ha már később a mappát járjuk be
-    images_database = exec_return("SELECT Filename, Description FROM Pictures ORDER BY Filename")
-    for image in images_dir:
-        # mivel tuple-t ad vissza az adatbazis ezert a másodikban lévő lista fájlneveit át kell alakítani str-é
-        if image in (str(images_database[1])):
-            # megegyező nevű képeket dictionarybe gyűjtük a {kép neve : leiras }
-            image_names.update({image: images_database[1][i][1]})
-            atlagok.update({image: avgRate(str(image))})
-            i += 1
-    return render_template("pictures.html", image_names=image_names, atlagok=atlagok)
+    # az adatbázisban lévő képek kilistázása filename szerint visszafele rendezve (legujabb lesz az elso)
+    images_database = exec_return("SELECT Filename, Title, Description FROM Pictures ORDER BY Filename DESC ")[1]
+    for image in images_database:
+        atlagok.update({image[0]: avgRate(str(image[0]))})
+    return render_template("pictures.html", image_names=images_database, atlagok=atlagok)
 
 
 @app.route('/pictures/<filename>')
 def avgRate(filename):
-    atlagok = exec_return(f"select AVG(stars) from Ratings where picture=:pic", [filename])
+    atlagok = exec_return("select AVG(stars) from Ratings where picture=:pic", [filename])
     return str(atlagok[1][0][0])
 
 
