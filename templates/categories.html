@@ -51,7 +51,7 @@
                 <h1>Kategóriák</h1>
                 <p>
                     Az összes kép, kategóriákra bontva, a legjobbra értékelttől a legrosszabbig.<br>
-                    <small>Igazságtalannak érzi valamelyik értékelést? A Képeink lapon befolyásolhatja azt.</small>
+                    <small>Igazságtalannak érzi a sorrendet? Ne habozzon értékelni!</small>
                 </p>
             </div>
 
@@ -73,11 +73,10 @@
                     <div class="gallery">
                         <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
                         <div class="desc">
-                            <b>{{ photo[1] }}</b>
+                            <b>{{ photo[1] }}</b><br>
                             {% if photo[2] is not none %}
                             {{ photo[2] }}
                             {% endif %}
-                        </div>
                             <div class="ratings">
                                 <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='categories', filename=photo[0], score=1) }}"></a>
                                 <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='categories', filename=photo[0], score=2) }}"></a>
@@ -92,6 +91,7 @@
                                 <span>Még nem volt értékelve</span>
                             {% endif %}
                         </div>
+                    </div>
                 {% endfor %}
             {% endif %}
             <br>

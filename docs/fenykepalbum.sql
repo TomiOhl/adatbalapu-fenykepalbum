@@ -60,3 +60,65 @@ FOR EACH ROW
 BEGIN
     DELETE FROM Ratings WHERE Picture = :OLD.Filename;
 END;
+
+CREATE OR REPLACE TRIGGER default_pic_rate
+AFTER INSERT ON Pictures
+FOR EACH ROW
+DECLARE
+    kep pictures.filename%TYPE;
+    author pictures.author%TYPE;
+BEGIN
+    kep := :NEW.filename;
+    author := :NEW.author;
+    INSERT INTO Ratings Values (0, kep, author);
+end;
+
+CREATE OR REPLACE FUNCTION photos_share(user IN VARCHAR2)
+RETURN FLOAT IS
+    szazalek FLOAT;
+    kepekszama FLOAT;
+    userkepei FLOAT;
+BEGIN
+    SELECT COUNT(*) INTO kepekszama FROM Pictures;
+    SELECT COUNT(*) INTO userkepei FROM Pictures WHERE Author = user;
+    szazalek := kepekszama / userkepei;
+    RETURN (szazalek);
+END photos_share;
+
+ALTER FUNCTION photos_share COMPILE;
+
+CREATE OR REPLACE FUNCTION photos_at_home(user IN VARCHAR2)
+RETURN FLOAT IS
+    szazalek FLOAT(7);
+    kepekszama FLOAT(7);
+    otthonikepek FLOAT(7);
+    userlocation NUMBER(7);
+BEGIN
+    SELECT Location INTO userlocation FROM Users WHERE Nick = user;
+    SELECT COUNT(*) INTO kepekszama FROM Pictures;
+    SELECT COUNT(*) INTO otthonikepek FROM Pictures, Users WHERE Author = user AND Pictures.Location = userlocation AND Pictures.Location = Users.Location;
+    szazalek := kepekszama / otthonikepek;
+    RETURN (szazalek);
+END photos_at_home;
+
+ALTER FUNCTION photos_at_home COMPILE;
+
+CREATE OR REPLACE FUNCTION given_ratings_avg(user IN VARCHAR2)
+RETURN FLOAT IS
+    szazalek FLOAT(7);
+BEGIN
+    SELECT AVG(Stars) INTO szazalek FROM Ratings WHERE Usernick = user;
+    RETURN (szazalek);
+END given_ratings_avg;
+
+ALTER FUNCTION given_ratings_avg COMPILE;
+
+CREATE OR REPLACE FUNCTION received_ratings_avg(user IN VARCHAR2)
+RETURN FLOAT IS
+    szazalek FLOAT(7);
+BEGIN
+    SELECT AVG(Stars) INTO szazalek FROM Ratings WHERE Picture = (SELECT Filename FROM Pictures WHERE Pictures.Author = user);
+    RETURN (szazalek);
+END received_ratings_avg;
+
+ALTER FUNCTION received_ratings_avg COMPILE;

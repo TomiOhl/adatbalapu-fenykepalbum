@@ -251,12 +251,12 @@ def get_images():
     # az adatbázisban lévő képek kilistázása filename szerint visszafele rendezve (legujabb lesz az elso)
     images_database = exec_return("SELECT Filename, Title, Description FROM Pictures ORDER BY Filename DESC ")[1]
     for image in images_database:
-        atlagok.update({image[0]: avgRate(str(image[0]))})
+        atlagok.update({image[0]: avg_rate(str(image[0]))})
     return render_template("pictures.html", image_names=images_database, atlagok=atlagok)
 
 
 @app.route('/pictures/<filename>')
-def avgRate(filename):
+def avg_rate(filename):
     atlagok = exec_return("select AVG(stars) from Ratings where picture=:pic", [filename])
     return str(atlagok[1][0][0])
 

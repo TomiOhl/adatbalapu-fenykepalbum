@@ -83,7 +83,6 @@
                             {% if photo[2] is not none %}
                             {{ photo[2] }}
                             {% endif %}
-                        </div>
                             <div class="ratings">
                                 <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=1) }}"></a>
                                 <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=2) }}"></a>
@@ -92,6 +91,7 @@
                                 <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=5) }}"></a>
                             </div>
                             <input type="text" style="display: none" class="ratingValue">
+                        </div>
                     </div>
                 {% endfor %}
             {% endif %}
