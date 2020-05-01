@@ -117,6 +117,11 @@
                         {% if photo[2] is not none %}
                         {{ photo[2] }}<br>
                         {% endif %}
+                        {% if photo[3] is not none %}
+                            <span>Értékelés: {{ photo[5] }}*</span><br>
+                        {% else %}
+                            <span>Még nem volt értékelve</span><br>
+                        {% endif %}
                         <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-modify" data-val="{{photo[0]}}, {{photo[1]}}, {{photo[2]}}, {{photo[3]}}, {{photo[4]}}, profile">Módosítás</a>
                         <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-delete" data-val="{{photo[0]}}, profile">Törlés</a>
                     </div>

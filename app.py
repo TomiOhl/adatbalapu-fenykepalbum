@@ -133,7 +133,8 @@ def profile():
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""",
                                [nick])
     # sajat kepek megjelenitese
-    own_pictures = exec_return("""SELECT Filename, Title, Description, Location, Categories.Name\
+    own_pictures = exec_return("""SELECT Filename, Title, Description, Location, Categories.Name,\
+                                    (SELECT AVG(Stars) FROM Ratings WHERE Picture=Filename)\
                                     FROM Pictures, Categories WHERE Author = :nick AND Filename = Pictureid""",
                                [nick])[1]
 
@@ -304,7 +305,9 @@ def mostactive():
                                     WHERE Author = Nick GROUP BY Nick ORDER BY COUNT(*) DESC, Nick\
                                 ) WHERE rownum <= 8""")[1]
     if chosenuser is not None:
-        photos_from_user = exec_return("""SELECT Filename, Title, Description FROM Pictures\
+        photos_from_user = exec_return("""SELECT Filename, Title, Description,\
+                                            (SELECT AVG(Stars) FROM Ratings WHERE Picture=Filename)\
+                                            FROM Pictures\
                                             WHERE Author = :chosenuser""", [chosenuser])[1]
         chosen_user_count = exec_return("SELECT COUNT(*) FROM Pictures where Author = :chosenuser",
                                         [chosenuser])[1][0][0]
@@ -339,7 +342,9 @@ def worldmap():
     mostvisited = sorted(mostvisited.items(), key=lambda x: x[1], reverse=True)
     # ha valasztottunk telepulest, jelenitsunk meg kepeket es a varosok arcait
     if chosensettlement is not None:
-        photos_from_place = exec_return("""SELECT Filename, Title, Description FROM Pictures\
+        photos_from_place = exec_return("""SELECT Filename, Title, Description,\
+                                            (SELECT AVG(Stars) FROM Ratings WHERE Picture=Filename)\
+                                            FROM Pictures\
                                             WHERE Location = :chosensettlement""", [chosensettlement])[1]
         # varosok arcai feature
         settlement_faces = exec_return("""SELECT Author, COUNT(*) FROM Pictures\
