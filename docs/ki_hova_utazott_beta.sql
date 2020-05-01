@@ -20,13 +20,14 @@ CREATE TYPE uticelok_record AS OBJECT (
 );
 CREATE TYPE uticelok_table AS TABLE OF uticelok_record;
 
-create or replace FUNCTION "travelers_places"
-RETURN uticelok_table AS
+CREATE OR REPLACE FUNCTION travelers_places
+RETURN uticelok_table IS
         uticelok uticelok_table;
     BEGIN
         -- kigyujti azokat a helyeket, ahova kirandultak a juzerek
         SELECT Author, Pictures.Title, Settlements.Name
-        BULK COLLECT INTO uticelok(author, title, location)
+        BULK COLLECT INTO uticelok
         FROM Pictures, Users, Settlements
         WHERE Author = Users.Nick AND Pictures.Location != Users.Location AND Pictures.Location = Settlements.Id;
-    END;​
+        RETURN (uticelok);
+    END travelers_places;

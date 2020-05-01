@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, url_for, redirect, session, send_from_directory, flash
 from werkzeug.utils import secure_filename
 
-from db_actions import exec_return, exec_noreturn
+from db_actions import exec_return, exec_noreturn, exec_function
 from categories import CATEGORIES
 from settlements import get_settlements
 
@@ -324,7 +324,7 @@ def worldmap():
     photos_from_place = []
     settlement_faces = []
     # legnepszerubb uticelok feature
-    # print(exec_return("""SELECT * FROM TABLE("travelers_places"())""")) # beepitett fuggveny, de nem mukodik
+    # print(exec_return("""SELECT * FROM TABLE("travelers_places"())""")) # tarolt fuggveny, de nem mukodik
     travelers_places = exec_return("""select Author, Settlements.Name from Pictures, Users, Settlements\
                     where author = users.nick and pictures.location != users.location\
                     and pictures.location = settlements.id ORDER BY Settlements.Name""")[1]
@@ -359,9 +359,11 @@ def stats():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    # beepitett fgv-k mint: hany kep van feltoltve, ennek hany szazaleka a bejelentkezett usertol, milyen kategoriak
-    # kepek hany szazalekat toltotte fol a user a szulovarosaban
-    # atlagban milyen ratinget ad, milyet kap
+    user = session.get('nick')
+    # tarolt fgv-k mint: hany kep van feltoltve, ennek hany szazaleka a bejelentkezett usertol: photos_share
+    # print(exec_function('photos_share', float, user))
+    # kepek hany szazalekat toltotte fol a user a szulovarosaban: photos_at_home
+    # atlagban milyen ratinget ad (given_ratings_avg), milyet kap (received_ratings_avg)
     return render_template('stats.html')
 
 
