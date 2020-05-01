@@ -194,7 +194,6 @@ def modifypic():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    nick = session.get('nick')
     source = request.args.get('from').strip()
     # formok kezelese
     if request.method == 'POST':
