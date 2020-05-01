@@ -350,6 +350,16 @@ def worldmap():
                            mostvisited=mostvisited, photos=photos_from_place, settlement_faces=settlement_faces)
 
 
+# stats.html
+@app.route('/stats')
+def stats():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
+
+    return render_template('stats.html')
+
+
 # logout process
 @app.route('/logout')
 def logout():
