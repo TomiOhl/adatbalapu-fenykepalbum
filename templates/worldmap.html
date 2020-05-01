@@ -66,11 +66,14 @@
             {% if chosensettlement is not none %}
                 <h3 class="capitalize">{{ chosensettlement }}</h3>
                 <div>({{ photos|length }} kép)</div>
+            {% endif %}
 
                 <div class="container-fluid">
                     <div class="row">
 
+                        <!-- bal oldal -->
                         <div class="col-sm-9 col-xs-12">
+                        {% if chosensettlement is not none %}
                             {% for photo in photos %}
                                 <div class="gallery">
                                     <img class="image" src="{{url_for('send_image', filename=photo[0])}}" alt="Fotó">
@@ -82,24 +85,39 @@
                                     </div>
                                 </div>
                             {% endfor %}
+                        {% endif %}
                         </div>
 
-                        <!--varosok arcai feature-->
-                        {% if settlement_faces|length > 0 %}
-                            <div class="col-sm-3 col-xs-12">
+                        <!-- jobb oldal -->
+                        <div class="col-sm-3 col-xs-12">
+                            <!--varosok arcai feature-->
+                            {% if settlement_faces|length > 0 %}
                                 <div class="personal-card">
+                                    <b>A hely arcai</b><br>
+                                    <small>Avagy akik szívesen fotóztak ezen a helyen</small><br>
                                     <ul>
                                     {% for user in settlement_faces %}
                                         <li>{{ user[0] }}: {{ user[1] }} kép</li>
                                     {% endfor %}
                                     </ul>
                                 </div>
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                            <!--legnepszerubb uticelok feature-->
+                            {% if mostvisited|length > 0 %}
+                                <div class="personal-card">
+                                    <b>A legnépszerűbb úti célok</b><br>
+                                    <small>Avagy azok a helyek, ahová a legtöbben utaztak el</small><br>
+                                    <ul>
+                                    {% for place in mostvisited[:8] %}
+                                        <li>{{ place[0] }}: {{ place[1] }} látogató</li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
 
                     </div>
                 </div>
-            {% endif %}
 
         </section>
 

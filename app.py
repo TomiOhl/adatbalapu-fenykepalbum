@@ -318,18 +318,34 @@ def worldmap():
     chosensettlement = request.args.get('place')
     photos_from_place = []
     settlement_faces = []
+    # legnepszerubb uticelok feature
+    # print(exec_return("""SELECT * FROM TABLE("travelers_places"())""")) # beepitett fuggveny, de nem mukodik
+    travelers_places = exec_return("""select Author, Settlements.Name from Pictures, Users, Settlements\
+                    where author = users.nick and pictures.location != users.location\
+                    and pictures.location = settlements.id ORDER BY Settlements.Name""")[1]
+    # dictionarybe rendezzuk {telepules: latogatok} formaban
+    mostvisited = dict()
+    for elem in travelers_places:
+        if elem[1] not in mostvisited.keys():
+            mostvisited[elem[1]] = 1
+        else:
+            mostvisited[elem[1]] += 1
+    # sorba rendezzuk a dictionary elemeit ertek szerint, eredmeny egy list
+    mostvisited = sorted(mostvisited.items(), key=lambda x: x[1], reverse=True)
+    # ha valasztottunk telepulest, jelenitsunk meg kepeket es a varosok arcait
     if chosensettlement is not None:
         photos_from_place = exec_return("""SELECT Filename, Title, Description FROM Pictures\
                                             WHERE Location = :chosensettlement""", [chosensettlement])[1]
         # varosok arcai feature
         settlement_faces = exec_return("""SELECT Author, COUNT(*) FROM Pictures\
-                                            WHERE Location = :chosensettlement GROUP BY Author ORDER BY COUNT(*)""",
+                                            WHERE Location = :chosensettlement\
+                                            GROUP BY Author ORDER BY COUNT(*), Author""",
                                        [chosensettlement])[1]
         # mostmar a neve kell a telepulesnek az id helyett
         chosensettlement = exec_return("SELECT Name FROM Settlements WHERE Id = :chosensettlement",
                                        [chosensettlement])[1][0][0]
     return render_template('worldmap.html', settlements=settlements, chosensettlement=chosensettlement,
-                           photos=photos_from_place, settlement_faces=settlement_faces)
+                           mostvisited=mostvisited, photos=photos_from_place, settlement_faces=settlement_faces)
 
 
 # logout process
