@@ -68,6 +68,11 @@
                     <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name, score=5) }}"></a>
                 </div>
                 <input type="text" style="display: none" class="ratingValue">
+                {% for kep, atlag in atlagok.items() %}
+                    {% if kep == image_name %}
+                        <span>{{ atlag }}</span>
+                    {% endif %}
+                {% endfor %}
             </div>
         {% endfor %}
         </section>

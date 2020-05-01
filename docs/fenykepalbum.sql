@@ -53,3 +53,10 @@ FOR EACH ROW
 BEGIN
     DELETE FROM Categories WHERE Pictureid = :OLD.Filename;
 END;
+
+CREATE OR REPLACE TRIGGER delete_from_ratings
+AFTER DELETE ON Pictures
+FOR EACH ROW
+BEGIN
+    DELETE FROM Ratings WHERE Picture = :OLD.Filename;
+END;
