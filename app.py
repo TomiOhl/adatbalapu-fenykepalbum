@@ -225,20 +225,20 @@ def delete():
     return redirect(source)
 
 
-@app.route('/rate/<filename>/<score>')
-def send_rating(filename, score):
+@app.route('/<page>/<filename>/<score>')
+def send_rating(page, filename, score):
     author = session.get('nick')
     # rate-el ellenőrizzük, hogy az értékelésünkkel ne vegezzünk felesleges Update-lést
-    rate = exec_return("SELECT Stars FROM Ratings WHERE Picture=:picture AND Usernick=:author", [filename, author])
+    rate = exec_return(f"SELECT Stars FROM Ratings WHERE Picture=:picture AND Usernick=:author", [filename, author])
     if len(rate[1]) == 0:
         # kep ertekeles feltoltese adatbazisba ha még nincsen
-        exec_noreturn("INSERT INTO Ratings VALUES (:star, :picture, :author)", [score, filename, author])
+        exec_noreturn(f"INSERT INTO Ratings VALUES (:star, :picture, :author)", [score, filename, author])
     elif rate[1][0][0] == score:
         pass
     else:
-        exec_noreturn("UPDATE Ratings SET Stars=:star WHERE Picture=:picture AND Usernick=:author ",
+        exec_noreturn(f"UPDATE Ratings SET Stars=:star WHERE Picture=:picture AND Usernick=:author ",
                       [score, filename, author])
-    return redirect(url_for('pictures'))
+    return redirect(url_for(page))
 
 
 # képeink oldal tartalma

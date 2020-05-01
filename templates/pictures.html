@@ -64,23 +64,22 @@
                         {{ image_name[2] }}<br>
                         {% endif %}
                         <div class="ratings">
-                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=1) }}"></a>
-                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=2) }}"></a>
-                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=3) }}"></a>
-                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=4) }}"></a>
-                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', filename=image_name[0], score=5) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='pictures', filename=image_name[0], score=1) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='pictures', filename=image_name[0], score=2) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='pictures', filename=image_name[0], score=3) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='pictures', filename=image_name[0], score=4) }}"></a>
+                            <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='pictures', filename=image_name[0], score=5) }}"></a>
                         </div>
-
-                <input type="text" style="display: none" class="ratingValue">
-                {% for kep, atlag in atlagok.items() %}
-                    {% if kep == image_name[0] %}
-                        {% if atlag != "None" %}
-                            <span>Értékelés: {{ atlag }}*</span>
-                        {% else %}
-                            <span>Még nem volt értékelve</span>
+                    <input type="text" style="display: none" class="ratingValue">
+                    {% for kep, atlag in atlagok.items() %}
+                        {% if kep == image_name[0] %}
+                            {% if atlag != "None" %}
+                                <span>Értékelés: {{ atlag }}*</span>
+                            {% else %}
+                                <span>Még nem volt értékelve</span>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                {% endfor %}
+                    {% endfor %}
                 </div>
             </div>
         {% endfor %}
@@ -94,36 +93,6 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <!-- Értékelés csillagokkal-->
-    <script>
-            {#lekérjük a ratings értékeit vagyis a csillagokat#}
-            let stars = document.querySelectorAll('.ratings .fa');
-            let ratingValue = document.querySelector(".ratingValue");
-            let index, currentStars;
-            for (let i = 0; i < stars.length; i++) {
-                <!-- Ha az egeret rávisszük akk jelölje ki a csillagokat-->
-                stars[i].addEventListener("mouseover", function () {
-                    currentStars = i % 5;
-                    for (let j = i-currentStars; j <= i; j++) {
-                        stars[j].classList.remove("fa-star-o");
-                        stars[j].classList.add("fa-star");
-                    }
-                });
-                stars[i].addEventListener("click", function () {
-                    ratingValue.value = i + 1;
-                    index = i;
-                })
-                // ha kikattintunk akkor is maradjanak meg a pontozott részek
-                stars[i].addEventListener("mouseout", function () {
-                    for (let j = 0; j < stars.length; j++) {
-                        stars[j].classList.remove("fa-star");
-                        stars[j].classList.add("fa-star-o");
-                    }
-                    for (let j = index-currentStars; j <= index; j++) {
-                        stars[j].classList.remove("fa-star-o");
-                        stars[j].classList.add("fa-star");
-                    }
-                })
-            }
-    </script>
+    <script src="../static/stars.js"></script>
     </body>
 </html>

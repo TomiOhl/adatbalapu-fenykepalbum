@@ -60,3 +60,15 @@ FOR EACH ROW
 BEGIN
     DELETE FROM Ratings WHERE Picture = :OLD.Filename;
 END;
+
+CREATE OR REPLACE TRIGGER default_pic_rate
+AFTER INSERT ON Pictures
+FOR EACH ROW
+DECLARE
+    kep pictures.filename%TYPE;
+    author pictures.author%TYPE;
+BEGIN
+    kep := :NEW.filename;
+    author := :NEW.author;
+    INSERT INTO Ratings Values (0, kep, author);
+end;
