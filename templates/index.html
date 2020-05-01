@@ -96,6 +96,11 @@
             {% endif %}
         {% endwith %}
     </script>
+    <script>
+        //tiltsuk le azokat a select opciokat, amik orszagnevek
+        $('select').children('option[value="x"]').attr('disabled', true)
+                                                                            .css({"color":"#0266c8", "font-weight":"bold"});
+    </script>
 
 </body>
 

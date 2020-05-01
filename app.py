@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 
 from db_actions import exec_return, exec_noreturn
 from categories import CATEGORIES
+from settlements import get_settlements
 
 APP_FOLDER = os.path.realpath(os.path.dirname(__file__))
 UPLOAD_FOLDER = os.path.join(APP_FOLDER, "uploads")
@@ -22,7 +23,7 @@ def index():
     if 'nick' in session:
         return redirect(url_for('profile'))
     # regisztracio lenyilo listahoz telepulesek listaja
-    settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
+    settlements = get_settlements()
     # formok kezelese
     if request.method == 'POST':
         form_data = request.form  # bekerjuk a form adatait
@@ -85,7 +86,7 @@ def profile():
     # nick lekerese
     nick = session.get('nick')
     # szemelyes adatok modositasanal lenyilo listahoz telepulesek listaja
-    settlements = exec_return("SELECT Id, Name FROM Settlements ORDER BY Name")[1]
+    settlements = get_settlements()
     # formok kezelese
     if request.method == 'POST':
         form_data = request.form  # bekerjuk a formok adatait
@@ -132,7 +133,9 @@ def profile():
                                     and Users.location = Settlements.Id and Settlements.country = Countries.Id""",
                                [nick])
     # sajat kepek megjelenitese
-    own_pictures = exec_return("SELECT Filename, Title, Description FROM Pictures WHERE author = :nick", [nick])[1]
+    own_pictures = exec_return("""SELECT Filename, Title, Description, Location, Categories.Name\
+                                    FROM Pictures, Categories WHERE Author = :nick AND Filename = Pictureid""",
+                               [nick])[1]
 
     return render_template('profile.html', personaldata=personaldata, settlements=settlements, categories=CATEGORIES,
                            own_pictures=own_pictures)
@@ -140,6 +143,9 @@ def profile():
 
 @app.route('/uploadpic', methods=['POST'])
 def upload(form_data, nick):
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     file = request.files['uploadpic']
     extension = file.filename.rsplit('.', 1)[1]
     correct = True
@@ -176,12 +182,42 @@ def upload(form_data, nick):
 # feltoltott kép jelenjen meg html-ben
 @app.route('/uploadpic/<filename>')
 def send_image(filename):
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     return send_from_directory("uploads", filename)
+
+
+# modositas gombra nyomva
+@app.route('/modifypic', methods=['GET', 'POST'])
+def modifypic():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
+    nick = session.get('nick')
+    source = request.args.get('from').strip()
+    # formok kezelese
+    if request.method == 'POST':
+        form_data = request.form  # bekerjuk a formok adatait
+        title = form_data.get('title')
+        description = form_data.get('description')
+        location = form_data.get('location')
+        category = form_data.get('category')
+        filename = form_data.get('filename')
+        # frissites az adatbazisban
+        exec_noreturn("""Update Pictures\
+                        SET Title = :title, Description = :description, Location = :location\
+                        WHERE Filename = :filename""", [title, description, location, filename])
+        exec_noreturn("UPDATE Categories SET Name = :category WHERE Pictureid = :filename", [category, filename])
+    return redirect(source)
 
 
 # torles gombra nyomva
 @app.route('/delete')
 def delete():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     photo = request.args.get('photo')
     source = request.args.get('from').strip()
     exec_noreturn("DELETE FROM Pictures WHERE Filename = :photo", [photo])
@@ -192,6 +228,9 @@ def delete():
 
 @app.route('/pictures/<filename>/<score>')
 def send_rating(filename, score):
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     author = session.get('nick')
     # if exec_noreturn(f"SELECT * FROM Ratings WHERE EXISTS (SELECT * FROM Ratings WHERE Picture='{filename}' AND Usernick='{author}')"):
     exec_noreturn(f"UPDATE Ratings SET Stars='{score}' WHERE Picture='{filename}' AND Usernick='{author}' ")
@@ -202,6 +241,9 @@ def send_rating(filename, score):
 # képeink oldal tartalma
 @app.route('/pictures')
 def get_images():
+    # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
+    if 'nick' not in session:
+        return redirect(url_for('index'))
     image_names = dict()
     i = 0
     # az uploads-ban lévő képek kilistázása
@@ -271,18 +313,7 @@ def worldmap():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-    # lenyilo listahoz telepulesek listaja
-    settlements_query = exec_return("""SELECT Settlements.Id, Settlements.Name, Countries.Name\
-                                    FROM Settlements, Countries\
-                                    WHERE Settlements.Country = Countries.Id ORDER BY Country, Settlements.Name""")[1]
-    # atcsinaljuk ugy, hogy az orszagok is kapjanak opciot, elvalasztaskent
-    settlements = []
-    curr_country = ""
-    for item in settlements_query:
-        if item[2] != curr_country:
-            curr_country = item[2]
-            settlements.append(tuple(["x", f"*****{curr_country}*****"]))
-        settlements.append(tuple([item[0], item[1]]))
+    settlements = get_settlements()
     # ha mar valasztottunk telepulest, jelenitsuk meg a kepeket
     chosensettlement = request.args.get('place')
     photos_from_place = []

@@ -116,7 +116,7 @@
                         {% if photo[2] is not none %}
                         {{ photo[2] }}<br>
                         {% endif %}
-                        <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-modify" data-val="">Módosítás</a>
+                        <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-modify" data-val="{{photo[0]}}, {{photo[1]}}, {{photo[2]}}, {{photo[3]}}, {{photo[4]}}, profile">Módosítás</a>
                         <a href="#" class="btn-sm whitetext" data-toggle="modal" data-target="#modal-delete" data-val="{{photo[0]}}, profile">Törlés</a>
                     </div>
                 </div>
@@ -169,6 +169,9 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <!--a felugro ablakokat csak itt include-oljuk, amikor a jQuery mar bent van-->
+    {% include 'modal_modify.html' %}
+    {% include 'modal_delete.html' %}
     <!--ha volt flashelt errorunk-->
     <script>
         {% with messages = get_flashed_messages() %}
@@ -199,9 +202,11 @@
             $(this).find("#personalhidden").val(adat[4]);
         });
     </script>
-
-    <!--a torles felugro ablakot csak itt include-oljuk, amikor a jQuery mar bent van-->
-    {% include 'modal_delete.html' %}
+    <script>
+        //tiltsuk le azokat a select opciokat, amik orszagnevek
+        $('select').children('option[value="x"]').attr('disabled', true)
+                                                                            .css({"color":"#0266c8", "font-weight":"bold"});
+    </script>
 
     </body>
 </html>

@@ -1,0 +1,55 @@
+{% block body %}
+
+    <div class="modal fade" id="modal-modify" role="dialog" aria-labelledby="modal-modify" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>A fénykép adatainak módosítása</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" id="form-modify">
+                    <div class="modal-body">
+                        <!-- title, description, location, category -->
+                        <input type="text" name="title" id="szerktitle" placeholder="Kép neve" maxlength="30" autocomplete="off" required>
+                        <textarea class="form-control" rows="5" name="description" id="szerkdescription" placeholder="Leírás" maxlength="150"></textarea>
+                        <select name="location" id="szerklocation">
+                            <option selected hidden value="">Kép készítésének a helye</option>
+                            {% for s in settlements %}
+                                <option value="{{s[0]}}">{{s[1]}}</option>
+                            {% endfor %}
+                        </select>
+                        <select name="category" id="szerkcategory">
+                            <option selected hidden value="">Kategória</option>
+                            {% for cat in categories %}
+                                <option value="{{cat}}">{{cat}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" data-dismiss="modal" class="btn">Mégse</a>
+                        <input type="hidden" name="filename" id="szerkfilename" value=""/>
+                        <input type="submit" class="btn" value="Mentés"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //adatok atadasa a megfelelo html elemeknek
+        $('#modal-modify').on('show.bs.modal', function (event) {
+            let adat = $(event.relatedTarget).data('val').split(",");
+            $(this).find("#szerktitle").val(adat[1].trim());
+            $(this).find("#szerkdescription").val(adat[2].trim());
+            $(this).find("#szerklocation option:selected").text(adat[3] + " (Ha nem változott, hagyja)");
+            $(this).find("#szerklocation option:selected").val(adat[3]);
+            $(this).find("#szerkcategory option:selected").text(adat[4]);
+            $(this).find("#szerkcategory option:selected").val(adat[4]);
+            $(this).find("#szerkfilename").val(adat[0]);
+            $('#form-modify').attr('action', '/modifypic?from=' + adat[5]);
+        });
+    </script>
+
+{% endblock %}
