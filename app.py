@@ -273,9 +273,12 @@ def categories():
     photos_from_category = []
     chosen_category_count = 0
     if chosencategory is not None:
-        photos_from_category = exec_return("""SELECT Filename, Title, Description FROM Pictures, Categories\
+        photos_from_category = exec_return("""SELECT Filename, Title, Description,\
+                                                (SELECT AVG(Stars) FROM Ratings WHERE Picture=Filename) Avgstars
+                                                FROM Pictures, Categories\
                                                 WHERE Filename = Pictureid AND Pictureid IN\
-                                                (SELECT Pictureid FROM Categories WHERE Name = :chosencategory)""",
+                                                (SELECT Pictureid FROM Categories WHERE Name = :chosencategory)\
+                                                Order by Avgstars DESC """,
                                            [chosencategory])[1]
         chosen_category_count = exec_return("SELECT COUNT(*) FROM Categories WHERE Name = :chosencategory",
                                             [chosencategory])[1][0][0]
@@ -356,7 +359,9 @@ def stats():
     # ha nem vagyunk bejelentkezve, akkor irany bejelentkezni
     if 'nick' not in session:
         return redirect(url_for('index'))
-
+    # beepitett fgv-k mint: hany kep van feltoltve, ennek hany szazaleka a bejelentkezett usertol, milyen kategoriak
+    # kepek hany szazalekat toltotte fol a user a szulovarosaban
+    # atlagban milyen ratinget ad, milyet kap
     return render_template('stats.html')
 
 

@@ -48,7 +48,10 @@
 
             <div class="description">
                 <h1>Kategóriák</h1>
-                <p>Az összes kép, kategóriákra bontva.</p>
+                <p>
+                    Az összes kép, kategóriákra bontva, a legjobbra értékelttől a legrosszabbig.<br>
+                    <small>Igazságtalannak érzi valamelyik értékelést? A Képeink lapon befolyásolhatja azt.</small>
+                </p>
             </div>
 
         </header>
@@ -71,7 +74,12 @@
                         <div class="desc">
                             <b>{{ photo[1] }}</b><br>
                             {% if photo[2] is not none %}
-                            {{ photo[2] }}
+                            {{ photo[2] }}<br>
+                            {% endif %}
+                            {% if atlag is not none %}
+                                <span>Értékelés: {{ photo[3] }}*</span>
+                            {% else %}
+                                <span>Még nem volt értékelve</span>
                             {% endif %}
                         </div>
                     </div>
