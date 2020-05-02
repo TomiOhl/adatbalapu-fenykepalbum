@@ -240,6 +240,8 @@ def send_rating(page, filename, score):
     else:
         exec_noreturn(f"UPDATE Ratings SET Stars=:star WHERE Picture=:picture AND Usernick=:author ",
                       [score, filename, author])
+    if src is None:
+        return redirect(url_for(page))
     return redirect(url_for(page) + src)
 
 

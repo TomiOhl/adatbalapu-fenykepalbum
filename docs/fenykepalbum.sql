@@ -61,17 +61,13 @@ BEGIN
     DELETE FROM Ratings WHERE Picture = :OLD.Filename;
 END;
 
-CREATE OR REPLACE TRIGGER default_pic_rate
-AFTER INSERT ON Pictures
+CREATE OR REPLACE TRIGGER delete_from_users
+AFTER DELETE ON Users
 FOR EACH ROW
-DECLARE
-    kep pictures.filename%TYPE;
-    author pictures.author%TYPE;
 BEGIN
-    kep := :NEW.filename;
-    author := :NEW.author;
-    INSERT INTO Ratings Values (0, kep, author);
-end;
+    DELETE FROM Ratings WHERE Usernick = :OLD.Nick;
+    DELETE FROM Pictures WHERE Author = :OLD.Nick;
+END;
 
 CREATE OR REPLACE FUNCTION photos_share(user IN VARCHAR2)
 RETURN FLOAT IS
@@ -135,6 +131,15 @@ begin
   end if;
 end;
 
-create or replace procedure torles(kepneve Varchar2) is
-begin delete from ratings where stars = 0 and picture = kepneve;
-end;
+-- Nincs implementálva
+-- CREATE OR REPLACE TRIGGER default_pic_rate
+-- AFTER INSERT ON Pictures
+-- FOR EACH ROW
+-- DECLARE
+--     kep pictures.filename%TYPE;
+--     author pictures.author%TYPE;
+-- BEGIN
+--     kep := :NEW.filename;
+--     author := :NEW.author;
+--     INSERT INTO Ratings Values (0, kep, author);
+-- end;
