@@ -122,3 +122,19 @@ BEGIN
 END received_ratings_avg;
 
 ALTER FUNCTION received_ratings_avg COMPILE;
+
+CREATE OR REPLACE TRIGGER sajat_kep_ertekelese
+before update on ratings
+FOR EACH ROW
+declare
+  keptulaj Varchar2(20);
+begin
+  select author into keptulaj from pictures where filename = :new.picture;
+  if  keptulaj = :new.usernick then
+    raise_application_error(-20211, 'Sajat kepet nem lehet ertekelni!');
+  end if;
+end;
+
+create or replace procedure torles(kepneve Varchar2) is
+begin delete from ratings where stars = 0 and picture = kepneve;
+end;
