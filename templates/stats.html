@@ -63,11 +63,19 @@
                 Kérdés: "Az összes kép hány százalékát töltöttem fel én?"<br>
                 Válasz: <b>{{ photos_share }}%</b>-át.<br><br>
                 Kérdés: "Hány százalékban maradok otthon, ha fényképezésről van szó?"<br>
-                Válasz: a képek <b>{{ photos_at_home }}%</b>-a a szülővárosomban készült.<br><br>
+                Válasz: a képeim <b>{{ photos_at_home }}%</b>-át készítettem a szülővárosomban.<br><br>
                 Kérdés: "Átlagban mennyire tetszenek nekem a többiek képei, hány csillagot adok?"<br>
+                {% if given_ratings_avg is not none %}
                 Válasz: átlagban <b>{{ given_ratings_avg }} csillag</b>ot adok egy képre.<br><br>
+                {% else %}
+                Válasz: nem értékeltem még képet.<br><br>
+                {% endif %}
                 Kérdés: "Átlagban mennyire tetszenek másoknak az én képeim, hány csillagot kapok?"<br>
+                {% if given_ratings_avg is not none %}
                 Válasz: átlagban <b>{{ received_ratings_avg }} csillag</b>ot kapok egy képre.
+                {% else %}
+                Válasz: nem kaptam még értékelést.
+                {% endif %}
             </div>
 
         </section>

@@ -37,10 +37,9 @@ def exec_noreturn(query, params=None):   # ahol nem ter vissza (pl INSERT)
         print(error)
 
 
-def exec_function(name, ret_value, args):
+def exec_function(name, ret_value, args):   # tarolt fuggvenyek vegrehajtasahoz
     try:
         with connect() as connection:
-            # itt kellenek a db-műveletek
             with connection.cursor() as cursor:
                 result = cursor.callfunc(name, ret_value, [args])
     except cx_Oracle.Error as error:

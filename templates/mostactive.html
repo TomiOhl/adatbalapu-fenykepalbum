@@ -84,11 +84,11 @@
                             {{ photo[2] }}
                             {% endif %}
                             <div class="ratings">
-                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=1) }}"></a>
-                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=2) }}"></a>
-                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=3) }}"></a>
-                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=4) }}"></a>
-                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=5) }}"></a>
+                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=1, from='?user='+chosenuser) }}"></a>
+                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=2, from='?user='+chosenuser) }}"></a>
+                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=3, from='?user='+chosenuser) }}"></a>
+                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=4, from='?user='+chosenuser) }}"></a>
+                                <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='mostactive', filename=photo[0], score=5, from='?user='+chosenuser) }}"></a>
                             </div>
                             <input type="text" style="display: none" class="ratingValue">
                             {% if photo[3] != 0 %}

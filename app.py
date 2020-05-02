@@ -229,6 +229,7 @@ def delete():
 @app.route('/<page>/<filename>/<score>')
 def send_rating(page, filename, score):
     author = session.get('nick')
+    src = request.args.get('from')
     # rate-el ellenőrizzük, hogy az értékelésünkkel ne vegezzünk felesleges Update-lést
     rate = exec_return(f"SELECT Stars FROM Ratings WHERE Picture=:picture AND Usernick=:author", [filename, author])
     if len(rate[1]) == 0:
@@ -239,7 +240,7 @@ def send_rating(page, filename, score):
     else:
         exec_noreturn(f"UPDATE Ratings SET Stars=:star WHERE Picture=:picture AND Usernick=:author ",
                       [score, filename, author])
-    return redirect(url_for(page))
+    return redirect(url_for(page) + src)
 
 
 # képeink oldal tartalma
@@ -324,6 +325,7 @@ def worldmap():
     settlements = get_settlements()
     # ha mar valasztottunk telepulest, jelenitsuk meg a kepeket
     chosensettlement = request.args.get('place')
+    chosensettlement_id = chosensettlement  # ez jo lesz kesobbre az ertkeles utani linkhez
     photos_from_place = []
     settlement_faces = []
     # legnepszerubb uticelok feature
@@ -355,7 +357,8 @@ def worldmap():
         chosensettlement = exec_return("SELECT Name FROM Settlements WHERE Id = :chosensettlement",
                                        [chosensettlement])[1][0][0]
     return render_template('worldmap.html', settlements=settlements, chosensettlement=chosensettlement,
-                           mostvisited=mostvisited, photos=photos_from_place, settlement_faces=settlement_faces)
+                           mostvisited=mostvisited, photos=photos_from_place, settlement_faces=settlement_faces,
+                           chosensettlement_id=chosensettlement_id)
 
 
 # stats.html
