@@ -85,7 +85,7 @@
                                 <a class="fa fa-star-o"  href="{{ url_for('send_rating', page='categories', filename=photo[0], score=5) }}"></a>
                             </div>
                             <input type="text" style="display: none" class="ratingValue">
-                            {% if photo[3] is not none %}
+                            {% if photo[3] != 0 %}
                                 <span>Értékelés: {{ photo[3] }}*</span>
                             {% else %}
                                 <span>Még nem volt értékelve</span>

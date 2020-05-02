@@ -73,7 +73,7 @@
                     <input type="text" style="display: none" class="ratingValue">
                     {% for kep, atlag in atlagok.items() %}
                         {% if kep == image_name[0] %}
-                            {% if atlag != "None" %}
+                            {% if atlag|int != 0 %}
                                 <span>Értékelés: {{ atlag }}*</span>
                             {% else %}
                                 <span>Még nem volt értékelve</span>
