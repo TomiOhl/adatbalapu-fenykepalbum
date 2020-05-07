@@ -120,7 +120,7 @@ END received_ratings_avg;
 ALTER FUNCTION received_ratings_avg COMPILE;
 
 CREATE OR REPLACE TRIGGER sajat_kep_ertekelese
-before update on ratings
+before insert or update on ratings
 FOR EACH ROW
 declare
   keptulaj Varchar2(20);

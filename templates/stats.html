@@ -71,7 +71,7 @@
                 Válasz: nem értékeltem még képet.<br><br>
                 {% endif %}
                 Kérdés: "Átlagban mennyire tetszenek másoknak az én képeim, hány csillagot kapok?"<br>
-                {% if given_ratings_avg is not none %}
+                {% if received_ratings_avg is not none %}
                 Válasz: átlagban <b>{{ received_ratings_avg }} csillag</b>ot kapok egy képre.
                 {% else %}
                 Válasz: nem kaptam még értékelést.
